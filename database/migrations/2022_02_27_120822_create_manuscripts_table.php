@@ -17,16 +17,16 @@ class CreateManuscriptsTable extends Migration
             $table->id();
             $table->foreignId('book_id')->references('id')->on('books');
             $table->integer('book_part')->nullable();
-            //Hijri
+
             $table->string('trans_day')->nullable();
+            //Hijri
             $table->integer('trans_day_nbr')->nullable();
-            $table->string('trans_month')->nullable();
+            $table->integer('trans_month')->nullable();
             $table->integer('trans_syear')->nullable();
             $table->integer('trans_eyear')->nullable();
             //m => miladi
-            $table->string('trans_day_m')->nullable();
             $table->integer('trans_day_nbr_m')->nullable();
-            $table->string('trans_month_m')->nullable();
+            $table->integer('trans_month_m')->nullable();
             $table->integer('trans_syear_m')->nullable();
             $table->integer('trans_eyear_m')->nullable();
 

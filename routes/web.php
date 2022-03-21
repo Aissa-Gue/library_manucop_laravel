@@ -1,5 +1,14 @@
 <?php
 
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\CountryController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ManuscriptController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\TranscriberController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -30,5 +39,16 @@ Route::get('/', function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    Route::resource('users', UserController::class);
+    Route::resource('countries', CountryController::class)->except('show');
+    Route::resource('cities', CityController::class)->except('show');
+
+    Route::resource('manuscripts', ManuscriptController::class);
+    Route::resource('transcribers', TranscriberController::class);
+    Route::resource('authors', AuthorController::class);
+    Route::resource('books', BookController::class);
+    Route::resource('settings', SettingController::class);
+    Route::resource('dashboard', DashboardController::class);
 
 });

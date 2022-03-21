@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,6 +30,16 @@ class Transcriber extends Model
     public function manuscripts()
     {
         return $this->belongsToMany(Manuscript::class,'manuscript_transcribers');
+    }
+
+    public function fontMatchers()
+    {
+        return $this->hasMany(MatchingFont::class);
+    }
+
+    public function scopeInManu(Builder $builder, $manuscript_id)
+    {
+        return $builder->where('manuscript_id','=', $manuscript_id);
     }
 
     public function country()

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MachingFont extends Model
+class MatchingFont extends Model
 {
     use HasFactory;
 

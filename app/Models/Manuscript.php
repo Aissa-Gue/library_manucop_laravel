@@ -11,13 +11,14 @@ class Manuscript extends Model
 
     protected $fillable = [
         'book_id',
+        'book_part',
         'trans_day',
+
         'trans_day_nbr',
         'trans_month',
         'trans_syear',
         'trans_eyear',
 
-        'trans_day_m',
         'trans_day_nbr_m',
         'trans_month_m',
         'trans_syear_m',
@@ -35,7 +36,12 @@ class Manuscript extends Model
         'font_style',
         'regular_lines',
         'lines_notes',
+        'nbr_of_papers',
         'paper_size',
+        'size_notes',
+        'save_status',
+        'is_truncated',
+        'truncation_notes',
 
         'transcribed_from',
         'transcribed_to',
