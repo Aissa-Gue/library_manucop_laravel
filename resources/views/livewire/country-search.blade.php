@@ -1,20 +1,18 @@
 <div>
     <label for="country" class="form-label">{{$countryLivewire['label']}}</label>
-    <select wire:model="country"
-            class="form-select"
-            name="country_id"
-            id="country">
+    <input type='text'
+           class="form-select"
+           placeholder="{{$countryLivewire['placeholder']}}"
+           id="country"
+           list="countries"
+           wire:model="country"
+           name="country_name"
+           onchange="getId('#country','#countries','country_id_hidden')">
 
-        <option disabled>{{$countryLivewire['placeholder']}}</option>
+    <datalist id="countries">
         @foreach ($countries as $country)
-            <option value="{{$country->id}}">{{$country->name}}</option>
+            <option value="{{$country->name}}" data-id="{{$country->id}}">
         @endforeach
-    </select>
+    </datalist>
 
-    <script>
-        $(document).ready(function () {
-            $('#country').select2();
-            $('#country').val(null).trigger('change');//delete selection
-        });
-    </script>
 </div>

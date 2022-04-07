@@ -14,10 +14,11 @@ class CreateBookSubjectsTable extends Migration
     public function up()
     {
         Schema::create('book_subjects', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('book_id')->references('id')->on('books');
             $table->foreignId('subject_id')->references('id')->on('subjects');
             $table->timestamps();
-            $table->primary(['book_id','subject_id']);
+            $table->unique(['book_id', 'subject_id']);
         });
     }
 

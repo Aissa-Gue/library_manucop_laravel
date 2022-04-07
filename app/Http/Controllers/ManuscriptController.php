@@ -44,13 +44,7 @@ class ManuscriptController extends Controller
      */
     public function create()
     {
-        $motifs = Motif::all();
-        $colors = Color::all();
-        $manutypes = Manutype::all();
-        return view('manuscripts.create')
-            ->with('motifs', $motifs)
-            ->with('colors', $colors)
-            ->with('manutypes', $manutypes);
+        return view('manuscripts.create');
     }
 
 
@@ -58,30 +52,30 @@ class ManuscriptController extends Controller
     {
         $validated = $this->validate($request, [
             //Transcriber names in manu
-            'transcriber_id1' => 'required|integer|different:transcriber_id2|different:transcriber_id3|different:transcriber_id4|exists:transcribers,id',
-            'transcriber_id2' => 'nullable|required_with:name_in_manu2|integer|different:transcriber_id1|different:transcriber_id3|different:transcriber_id4|exists:transcribers,id',
-            'transcriber_id3' => 'nullable|required_with:name_in_manu3|integer|different:transcriber_id1|different:transcriber_id2|different:transcriber_id4|exists:transcribers,id',
-            'transcriber_id4' => 'nullable|required_with:name_in_manu4|integer|different:transcriber_id1|different:transcriber_id2|different:transcriber_id3|exists:transcribers,id',
-            'name_in_manu1' => 'required|required_with:transcriber_id1|max:255',
-            'name_in_manu2' => 'nullable|required_with:transcriber_id2|max:255',
-            'name_in_manu3' => 'nullable|required_with:transcriber_id3|max:255',
-            'name_in_manu4' => 'nullable|required_with:transcriber_id4|max:255',
+            'transcriber1_id' => 'required|integer|different:transcriber2_id|different:transcriber3_id|different:transcriber4_id|exists:transcribers,id',
+            'transcriber2_id' => 'nullable|required_with:name_in_manu2|integer|different:transcriber1_id|different:transcriber3_id|different:transcriber4_id|exists:transcribers,id',
+            'transcriber3_id' => 'nullable|required_with:name_in_manu3|integer|different:transcriber1_id|different:transcriber2_id|different:transcriber4_id|exists:transcribers,id',
+            'transcriber4_id' => 'nullable|required_with:name_in_manu4|integer|different:transcriber1_id|different:transcriber2_id|different:transcriber3_id|exists:transcribers,id',
+            'name_in_manu1' => 'required|required_with:transcriber1_id|max:255',
+            'name_in_manu2' => 'nullable|required_with:transcriber2_id|max:255',
+            'name_in_manu3' => 'nullable|required_with:transcriber3_id|max:255',
+            'name_in_manu4' => 'nullable|required_with:transcriber4_id|max:255',
 
             // transcriber matchers
             'fontMatchers1' => 'nullable|array',
-            'fontMatchers1.*' => 'nullable|distinct|different:transcriber_id1|integer|exists:transcribers,id',
+            'fontMatchers1.*' => 'nullable|distinct|different:transcriber1_id|integer|exists:transcribers,id',
             'fontMatchers2' => 'nullable|array',
-            'fontMatchers2.*' => 'nullable|distinct|different:transcriber_id2|integer|exists:transcribers,id',
+            'fontMatchers2.*' => 'nullable|distinct|different:transcriber2_id|integer|exists:transcribers,id',
             'fontMatchers3' => 'nullable|array',
-            'fontMatchers3.*' => 'nullable|distinct|different:transcriber_id3|integer|exists:transcribers,id',
+            'fontMatchers3.*' => 'nullable|distinct|different:transcriber3_id|integer|exists:transcribers,id',
             'fontMatchers4' => 'nullable|array',
-            'fontMatchers4.*' => 'nullable|distinct|different:transcriber_id4|integer|exists:transcribers,id',
+            'fontMatchers4.*' => 'nullable|distinct|different:transcriber4_id|integer|exists:transcribers,id',
 
             //book
             'book_id' => 'required|integer|exists:books,id',
             'book_part' => 'nullable|integer',
 
-            //Date of transcription
+            //Day of transcription
             'trans_day' => 'nullable|numeric|between:1,7',
 
             //Hijri date
@@ -100,7 +94,7 @@ class ManuscriptController extends Controller
             'signed_in' => 'required|boolean',
             'cabinet_id' => 'nullable|integer|exists:cabinets,id',
             'nbr_in_cabinet' => 'nullable|integer',
-            'manu_type' => 'nullable|string|in:مج,مص,دغ',//مجلد، مصحف، دون غلاف
+            'manu_type' => 'nullable|string|in:مج,مص,دغ', //مجلد، مصحف، دون غلاف
             'nbr_in_index' => 'nullable|integer',
 
             'font' => 'nullable|string|max:255|in:مغربي,مشرقي',
@@ -139,117 +133,8 @@ class ManuscriptController extends Controller
             'motif_ids.*' => 'nullable|integer|distinct|exists:motifs,id',
         ]);
         return $validated;
-
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $this->validateForm($request);
-
-        DB::beginTransaction();
-        try {
-            $manuscript = Manuscript::create($request->except([
-                'transcriber_id1', 'transcriber_id2',
-                'transcriber_id3', 'transcriber_id4',
-                'name_in_manu1', 'name_in_manu2',
-                'name_in_manu3', 'name_in_manu4',
-                'fontMatchers1', 'fontMatchers2', 'fontMatchers3', 'fontMatchers4',
-                'color_ids',
-                'manutype_ids',
-                'motif_ids'
-            ]));
-
-            // add colors
-            if (!empty($request->color_ids)) {
-                foreach ($request->color_ids as $color_id) {
-                    ManuscriptColor::create([
-                        'manuscript_id' => $manuscript->id,
-                        'color_id' => $color_id,
-                    ]);
-                }
-            }
-
-            // add manutypes
-            if (!empty($request->manutype_ids)) {
-                foreach ($request->manutype_ids as $manutype_id) {
-                    ManuscriptManutype::create([
-                        'manuscript_id' => $manuscript->id,
-                        'manutype_id' => $manutype_id,
-                    ]);
-                }
-            }
-
-            // add motifs
-            if (!empty($request->motif_ids)) {
-                foreach ($request->motif_ids as $motif_id) {
-                    ManuscriptMotif::create([
-                        'manuscript_id' => $manuscript->id,
-                        'motif_id' => $motif_id,
-                    ]);
-                }
-            }
-
-            // add Transcribers and FontMatchers
-            $transcriber_id1 = $request->transcriber_id1;
-            $transcriber_id2 = $request->transcriber_id2;
-            $transcriber_id3 = $request->transcriber_id3;
-            $transcriber_id4 = $request->transcriber_id4;
-            $name_in_manu1 = $request->name_in_manu1;
-            $name_in_manu2 = $request->name_in_manu2;
-            $name_in_manu3 = $request->name_in_manu3;
-            $name_in_manu4 = $request->name_in_manu4;
-
-            $fontMatchers1 = $request->fontMatchers1;
-            $fontMatchers2 = $request->fontMatchers2;
-            $fontMatchers3 = $request->fontMatchers3;
-            $fontMatchers4 = $request->fontMatchers4;
-
-            for ($i = 1; $i <= 4; $i++) {
-                if (${'transcriber_id' . $i} != null) {
-                    ManuscriptTranscriber::create([
-                        'manuscript_id' => $manuscript->id,
-                        'transcriber_id' => ${'transcriber_id' . $i},
-                        'name_in_manu' => $request->{'name_in_manu' . $i},
-                    ]);
-                }
-            }
-
-            for ($i = 1; $i <= 4; $i++) {
-                if (!empty(${'fontMatchers' . $i})) {
-                    foreach (${'fontMatchers' . $i} as $fontMatcher) {
-                        MatchingFont::create([
-                            'manuscript_id' => $manuscript->id,
-                            'transcriber_id' => ${'transcriber_id' . $i},
-                            'transcriber_id2' => $fontMatcher,
-                        ]);
-                    }
-                }
-            }
-
-            DB::commit();
-            $message = [
-                "label" => "تم إضافة الاستمارة بنجاح",
-                "bg" => "bg-success",
-            ];
-            return redirect()->route('manuscripts.show', $manuscript->id)
-                ->with('message', $message);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return $e;
-            $message = [
-                "label" => "حدثت مشكلة، لم يتم إضافة الاستمارة",
-                "bg" => "bg-danger",
-            ];
-            return back()->with('message', $message);
-        }
-    }
 
     /**
      * Display the specified resource.
@@ -259,8 +144,11 @@ class ManuscriptController extends Controller
      */
     public function show($id)
     {
+        $fontMatchers = MatchingFont::where('manuscript_id', $id)->get();
         $manuscript = Manuscript::with('transcribers', 'book', 'country', 'city')->find($id);
-        return view('manuscripts.show')->with('manuscript', $manuscript);
+        return view('manuscripts.show')
+            ->with('manuscript', $manuscript)
+            ->with('fontMatchers', $fontMatchers);
     }
 
     /**
@@ -271,8 +159,11 @@ class ManuscriptController extends Controller
      */
     public function edit($id)
     {
-        $manuscript = Manuscript::with('transcribers', 'book', 'country', 'city')->find($id);
-        return view('manuscripts.edit')->with('manuscript', $manuscript);
+        $manuscript = Manuscript::find($id);
+        $transcriberMatchers = MatchingFont::where('manuscript_id', $id)->get();
+        return view('manuscripts.edit')
+            ->with('manuscript', $manuscript)
+            ->with('transcriberMatchers', $transcriberMatchers);
     }
 
     /**
@@ -289,8 +180,8 @@ class ManuscriptController extends Controller
         DB::beginTransaction();
         try {
             $manuscript = Manuscript::create($request->except([
-                'transcriber_id1', 'transcriber_id2',
-                'transcriber_id3', 'transcriber_id4',
+                'transcriber1_id', 'transcriber2_id',
+                'transcriber3_id', 'transcriber4_id',
                 'name_in_manu1', 'name_in_manu2',
                 'name_in_manu3', 'name_in_manu4',
                 'fontMatchers1', 'fontMatchers2', 'fontMatchers3', 'fontMatchers4',
@@ -333,10 +224,10 @@ class ManuscriptController extends Controller
             }
 
             // update Transcribers & FontMatchers
-            $transcriber_id1 = $request->transcriber_id1;
-            $transcriber_id2 = $request->transcriber_id2;
-            $transcriber_id3 = $request->transcriber_id3;
-            $transcriber_id4 = $request->transcriber_id4;
+            $transcriber_id1 = $request->transcriber1_id;
+            $transcriber_id2 = $request->transcriber2_id;
+            $transcriber_id3 = $request->transcriber3_id;
+            $transcriber_id4 = $request->transcriber4_id;
             $name_in_manu1 = $request->name_in_manu1;
             $name_in_manu2 = $request->name_in_manu2;
             $name_in_manu3 = $request->name_in_manu3;
@@ -365,7 +256,7 @@ class ManuscriptController extends Controller
                         MatchingFont::create([
                             'manuscript_id' => $manuscript->id,
                             'transcriber_id' => ${'transcriber_id' . $i},
-                            'transcriber_id2' => $fontMatcher,
+                            'transcriber2_id' => $fontMatcher,
                         ]);
                     }
                 }
@@ -378,7 +269,6 @@ class ManuscriptController extends Controller
             ];
             return redirect()->route('manuscripts.show', $id)
                 ->with('message', $message);
-
         } catch (\Exception $e) {
             DB::rollBack();
             $message = [
@@ -412,7 +302,6 @@ class ManuscriptController extends Controller
                 "bg" => "bg-success",
             ];
             return redirect()->back()->with('message', $message);
-
         } catch (\Exception $e) {
             $message = [
                 "label" => "حدثت مشكلة، لم يتم حذف الاستمارة",

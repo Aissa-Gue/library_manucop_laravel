@@ -14,11 +14,12 @@ class CreateManuscriptTranscribersTable extends Migration
     public function up()
     {
         Schema::create('manuscript_transcribers', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('manuscript_id')->references('id')->on('manuscripts');
             $table->foreignId('transcriber_id')->references('id')->on('transcribers');
             $table->string('name_in_manu');
             $table->timestamps();
-            $table->primary(['manuscript_id','transcriber_id']);
+            $table->unique(['manuscript_id', 'transcriber_id']);
         });
     }
 

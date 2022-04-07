@@ -1,19 +1,21 @@
 <div>
-    <label for="book" class="form-label">{{$bookLivewire['label']}}</label>
-    <select wire:model="book"
-            class="form-select"
-            name="book_id"
-            id="book">
+    <label for="book" class="form-label">{{ $bookLivewire['label'] }}</label>
+    <input type='text' placeholder='{{ $bookLivewire['placeholder'] }}' class='form-control' list='books'
+        wire:model="book" id="book" name="book_name" onchange="getId('#book','#books','book_id_hidden')"
+        wire:change="setBookId(book_id)">
+    <!-- delete getId() function after changing other views -->
 
-        <option disabled>{{$bookLivewire['placeholder']}}</option>
+
+    <datalist id="books">
         @foreach ($books as $book)
-            <option value="{{$book->id}}">{{$book->title}}</option>
+            <option value="{{ $book->title }}" data-id="{{ $book->id }}">
         @endforeach
-    </select>
+    </datalist>
+
     <script>
-        $(document).ready(function () {
-            $('#book').select2();
-            $('#book').val(null).trigger('change');//delete selection
+        //get book data-id
+        $("#book").change(function() {
+            book_id = $('#books option[value="' + $('#book').val() + '"]').data('id')
         });
     </script>
 </div>

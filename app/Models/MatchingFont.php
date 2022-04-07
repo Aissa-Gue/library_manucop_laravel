@@ -17,16 +17,16 @@ class MatchingFont extends Model
 
     public function transcriber()
     {
-        return $this->belongsTo(Transcriber::class,'transcriber_id','id');
+        return $this->belongsTo(Transcriber::class, 'transcriber_id', 'id');
     }
 
-    public function transcriber1()
+    public function transcriber2()
     {
-        return $this->belongsTo(Transcriber::class,'transcriber_id2','id');
+        return $this->belongsTo(Transcriber::class, 'transcriber_id2', 'id');
     }
 
     public function manuscript()
     {
-        return $this->belongsTo(Manuscript::class,'manuscript_id','id');
+        return $this->belongsTo(Manuscript::class, 'manuscript_id', 'id');
     }
 }

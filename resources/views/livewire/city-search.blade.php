@@ -1,22 +1,18 @@
 <div>
     <label for="city" class="form-label">{{$cityLivewire['label']}}</label>
-    <select wire:model="city"
-            class="form-select"
-            name="city_id"
-            id="city">
+    <input type='text'
+           placeholder='{{$cityLivewire['placeholder']}}'
+           class='form-control'
+           list='cities'
+           wire:model="city"
+           id="city"
+           name="city_name"
+           onchange="getId('#city','#cities','city_id_hidden')">
 
-        <option disabled>{{$cityLivewire['placeholder']}}</option>
+    <datalist id="cities">
         @foreach ($cities as $city)
-            <option value="{{$city->id}}">{{$city->name}}</option>
+            <option value="{{$city->name}}" data-id="{{$city->id}}">
         @endforeach
-    </select>
-    <script>
-
-        $(document).ready(function () {
-            $('#city').select2();
-            $('#city').val(null).trigger('change');//delete selection
-        });
-
-    </script>
-
+    </datalist>
 </div>
+

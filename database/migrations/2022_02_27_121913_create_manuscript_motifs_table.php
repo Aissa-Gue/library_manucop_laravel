@@ -14,10 +14,11 @@ class CreateManuscriptMotifsTable extends Migration
     public function up()
     {
         Schema::create('manuscript_motifs', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('manuscript_id')->references('id')->on('manuscripts');
             $table->foreignId('motif_id')->references('id')->on('motifs');
             $table->timestamps();
-            $table->primary(['manuscript_id','motif_id']);
+            $table->unique(['manuscript_id', 'motif_id']);
         });
     }
 

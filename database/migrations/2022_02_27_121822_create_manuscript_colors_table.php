@@ -14,10 +14,11 @@ class CreateManuscriptColorsTable extends Migration
     public function up()
     {
         Schema::create('manuscript_colors', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('manuscript_id')->references('id')->on('manuscripts');
             $table->foreignId('color_id')->references('id')->on('colors');
             $table->timestamps();
-            $table->primary(['manuscript_id','color_id']);
+            $table->unique(['manuscript_id', 'color_id']);
         });
     }
 

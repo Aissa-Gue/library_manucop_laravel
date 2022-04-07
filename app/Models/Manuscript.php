@@ -58,7 +58,22 @@ class Manuscript extends Model
 
     public function transcribers()
     {
-        return $this->belongsToMany(Transcriber::class, 'manuscript_transcribers');
+        return $this->belongsToMany(Transcriber::class, 'manuscript_transcribers')->withPivot('name_in_manu');
+    }
+
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class, 'manuscript_colors');
+    }
+
+    public function motifs()
+    {
+        return $this->belongsToMany(Motif::class, 'manuscript_motifs');
+    }
+
+    public function manutypes()
+    {
+        return $this->belongsToMany(Manutype::class, 'manuscript_manutypes');
     }
 
     public function book()

@@ -14,10 +14,11 @@ class CreateManuscriptManutypesTable extends Migration
     public function up()
     {
         Schema::create('manuscript_manutypes', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('manuscript_id')->references('id')->on('manuscripts');
             $table->foreignId('manutype_id')->references('id')->on('manutypes');
             $table->timestamps();
-            $table->primary(['manuscript_id','manutype_id']);
+            $table->unique(['manuscript_id', 'manutype_id']);
         });
     }
 

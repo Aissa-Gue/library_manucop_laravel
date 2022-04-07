@@ -14,10 +14,11 @@ class CreateBookAuthorsTable extends Migration
     public function up()
     {
         Schema::create('book_authors', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('book_id')->references('id')->on('books');
             $table->foreignId('author_id')->references('id')->on('authors');
             $table->timestamps();
-            $table->primary(['book_id','author_id']);
+            $table->unique(['book_id', 'author_id']);
         });
     }
 

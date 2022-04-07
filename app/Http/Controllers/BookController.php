@@ -37,59 +37,6 @@ class BookController extends Controller
         return view('books.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required',
-            'authors' => 'required|array',
-            'authors.*' => 'required|distinct|integer|exists:authors,id',
-            'subjects' => 'required|array',
-            'subjects.*' => 'required|distinct|integer|exists:subjects,id'
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $book = Book::create([
-                'title' => $request->title,
-            ]);
-            foreach ($request->authors as $author) {
-                BookAuthor::create([
-                    'book_id' => $book->id,
-                    'author_id' => $author,
-                ]);
-            }
-            foreach ($request->subjects as $subject) {
-                BookSubject::create([
-                    'book_id' => $book->id,
-                    'subject_id' => $subject,
-                ]);
-            }
-
-            DB::commit();
-
-            $message = [
-                "label" => "تم إضافة الكتاب بنجاح",
-                "bg" => "bg-success",
-            ];
-            return redirect()->route('books.show', $book->id)
-                ->with('message', $message);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $message = [
-                "label" => "حدثت مشكلة، لم يتم إضافة الكتاب",
-                "bg" => "bg-success",
-            ];
-            return redirect()->back()->with('message', $message);
-        }
-
-    }
 
     /**
      * Display the specified resource.
@@ -111,65 +58,8 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        $book = Book::with('authors', 'subjects')->find($id);
-        return view('books.edit')->with('book', $book);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'title' => 'required',
-            'authors' => 'required|array',
-            'authors.*' => 'required|distinct|integer|exists:authors,id',
-            'subjects' => 'required|array',
-            'subjects.*' => 'required|distinct|integer|exists:subjects,id'
-        ]);
-
-        DB::beginTransaction();
-        try {
-            $book = Book::where('id', $id)->update([
-                'title' => $request->title,
-            ]);
-
-            BookAuthor::where('book_id', $id)->delete();
-            foreach ($request->authors as $author) {
-                BookAuthor::where('book_id', $id)->create([
-                    'book_id' => $id,
-                    'author_id' => $author,
-                ]);
-            }
-
-            BookSubject::where('book_id', $id)->delete();
-            foreach ($request->subjects as $subject) {
-                BookSubject::where('book_id', $id)->create([
-                    'book_id' => $id,
-                    'subject_id' => $subject,
-                ]);
-            }
-
-            DB::commit();
-            $message = [
-                "label" => "تم تعديل معلومات الكتاب بنجاح",
-                "bg" => "bg-success",
-            ];
-            return redirect()->route('books.show', $id)
-                ->with('message', $message);
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $message = [
-                "label" => "حدثت مشكلة، لم يتم تعديل معلومات الكتاب",
-                "bg" => "bg-danger",
-            ];
-            return redirect()->back()->with('message', $message);
-        }
+        $bookInfo = Book::with('authors', 'subjects')->find($id);
+        return view('books.edit')->with('bookInfo', $bookInfo);
     }
 
     /**
@@ -192,7 +82,6 @@ class BookController extends Controller
                 "bg" => "bg-success",
             ];
             return redirect()->back()->with('message', $message);
-
         } catch (\Exception $e) {
 
             if (Book::find($id)->manuscripts->count() > 0) {

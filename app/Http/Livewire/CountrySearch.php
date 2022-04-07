@@ -15,13 +15,13 @@ class CountrySearch extends Component
 
     public function countries()
     {
-        return $countries = Country::where('name','LIKE', '%'.$this->country.'%')->paginate(20);
+        return $countries = Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(25);
     }
 
     public function render()
     {
         return view('livewire.country-search')
-            ->with('countries',$this->countries())
-            ->with('countryLivewire',$this->countryLivewire);
+            ->with('countries', $this->countries())
+            ->with('countryLivewire', $this->countryLivewire);
     }
 }

@@ -2,20 +2,20 @@
 $subNavs = [
     [
         'text' => 'إضافة بلد',
-        'icon' => 'fas fa-user',
+        'icon' => 'fas fa-globe',
         'route' => 'countries.index',
     ],
     [
         'text' => 'إضافة مدينة',
-        'icon' => 'fas fa-user',
+        'icon' => 'fas fa-city',
         'route' => 'cities.index',
     ],
 ];
 ?>
 
-@include('includes.subNavs',$subNavs)
+@include('includes.subNavs', $subNavs)
 
-<form action="{{Route('cities.store')}}" method="post">
+<form action="{{ Route('cities.store') }}" method="post">
     @csrf
     <fieldset class="scheduler-border">
         <legend class="scheduler-border">إضافة مدينة</legend>
@@ -24,18 +24,18 @@ $subNavs = [
             <div class="col-md-7">
                 <label for="city" class="form-label">اسم المدينة</label>
                 <input name="name" class="form-control @error('name') is-invalid @enderror" id="city"
-                       placeholder="أدخل اسم المدينة">
+                    placeholder="أدخل اسم المدينة">
                 @error('name')
-                <div class="invalid-feedback">
-                    {{$message}}
-                </div>
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
                 @enderror
             </div>
         </div>
 
         <div class="row justify-content-end text-end">
             <div class="col-md-2">
-                <button type="submit" class="btn btn-success">إضافة المدينة</button>
+                <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> إضافة المدينة</button>
             </div>
         </div>
     </fieldset>
