@@ -27,6 +27,32 @@ class BookController extends Controller
         return view('books.index')->with('books', $books);
     }
 
+
+    public function quickSearch(Request $request)
+    {
+        $books = Book::with('authors', 'subjects')
+            ->where(function ($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->book . '%');
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('authors')
+                    ->orWhereHas('authors', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->author . '%');
+                    });
+            })
+
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('subjects')
+                    ->orWhereHas('subjects', function ($query) use ($request) {
+                        if (!empty($request->subjects)) $query->whereIn('name', $request->subjects);
+                    });
+            })
+            ->paginate(35)
+            ->withQueryString();
+
+        return view('search.results')->with('books', $books);
+    }
+
     /**
      * Show the form for creating a new resource.
      *

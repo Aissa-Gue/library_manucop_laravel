@@ -14,14 +14,16 @@
     #navigation .nav-link.active {
         border-radius: 25px;
     }
+
 </style>
 
 <div id="navigation">
     <ul class="nav nav-pills mb-4 fw-bold justify-content-center">
-        @foreach($subNavs as $subNav)
+        @foreach ($subNavs as $subNav)
             <li class="nav-item">
-                <a class="nav-link {{Route::is($subNav['route']) ? 'active' : ''}}" href="{{Route($subNav['route'])}}">
-                    <i class="{{$subNav['icon']}}"></i>
+                <a class="nav-link {{ Request::is($subNav['request']) ? 'active' : '' }}"
+                    href="{{ Route($subNav['route']) }}">
+                    <i class="{{ $subNav['icon'] }}"></i>
                     {{ $subNav['text'] }}
                 </a>
             </li>

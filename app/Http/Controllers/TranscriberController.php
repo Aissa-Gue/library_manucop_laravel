@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Manuscript;
 use App\Models\Transcriber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TranscriberController extends Controller
 {
@@ -25,6 +26,67 @@ class TranscriberController extends Controller
         }
 
         return view('transcribers.index')->with('transcribers', $transcribers);
+    }
+
+    public function quickSearch(Request $request)
+    {
+        $transcribers = Transcriber::with('manuscripts', 'country', 'city')
+            ->where(function ($query) use ($request) {
+                $query->select(DB::raw("CONCAT(full_name, ' ', IFNULL(descent1,''),' ', IFNULL(descent2,''),' ', IFNULL(descent3,''),' ',IFNULL(descent4,''), ' ',IFNULL(descent5,''), ' ',IFNULL(other_name1,''),' ',IFNULL(other_name2,''),' ',IFNULL(other_name3,''),' ',IFNULL(other_name4,'')) as full_name_descent_other"))
+                    ->having('full_name_descent_other', 'LIKE', '%' . $request->transcriber . '%');
+            })
+            ->where(function ($query) use ($request) {
+                $query->where('last_name', 'like', '%' . $request->last_name . '%')
+                    ->orWhereNull('last_name');
+            })
+            ->where(function ($query) use ($request) {
+                $query->where('nickname', 'like', '%' . $request->nickname . '%')
+                    ->orWhereNull('nickname');
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('country')
+                    ->orWhereHas('country', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->country . '%');
+                    });
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('city')
+                    ->orWhereHas('city', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->city . '%');
+                    });
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('manuscripts')
+                    ->orWhereHas('manuscripts', function ($query) use ($request) {
+                        $query->where('trans_syear', '>=', $request->trans_syear ?? 0)
+                            ->orWhereNull('trans_syear');
+                    });
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('manuscripts')
+                    ->orWhereHas('manuscripts', function ($query) use ($request) {
+                        $query->where('trans_eyear', '<=', $request->trans_eyear ?? 999999)
+                            ->orWhereNull('trans_eyear');
+                    });
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('manuscripts')
+                    ->orWhereHas('manuscripts', function ($query) use ($request) {
+                        $query->where('trans_syear_m', '>=', $request->trans_syear_m ?? 0)
+                            ->orWhereNull('trans_syear_m');
+                    });
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('manuscripts')
+                    ->orWhereHas('manuscripts', function ($query) use ($request) {
+                        $query->where('trans_eyear_m', '<=', $request->trans_eyear_m ?? 999999)
+                            ->orWhereNull('trans_eyear_m');
+                    });
+            })
+            ->paginate(35)
+            ->withQueryString();
+
+        return view('search.results')->with('transcribers', $transcribers);
     }
 
     /**
@@ -68,7 +130,6 @@ class TranscriberController extends Controller
                 "label" => "تم إضافة الناسخ بنجاح",
                 "bg" => "bg-success",
             ];
-
         } catch (\Exception $e) {
             $message = [
                 "label" => "حدثت مشكلة، لم يتم إضافة الناسخ",
@@ -154,7 +215,6 @@ class TranscriberController extends Controller
                 "label" => "تم تعديل معلومات الناسخ بنجاح",
                 "bg" => "bg-success",
             ];
-
         } catch (\Exception $e) {
             $message = [
                 "label" => "حدثت مشكلة، لم يتم تعديل معلومات الناسخ",
@@ -181,14 +241,12 @@ class TranscriberController extends Controller
                 "bg" => "bg-success",
             ];
             return redirect()->back()->with('message', $message);
-
         } catch (\Exception $e) {
             if (Transcriber::find($id)->manuscripts->count() > 0 || Transcriber::find($id)->matchers->count() > 0) {
                 $message = [
                     "label" => "خطأ، للناسخ استمارات يجب حذفها أولا",
                     "bg" => "bg-danger",
                 ];
-
             } else {
                 $message = [
                     "label" => "حدثت مشكلة، لم يتم حذف الناسخ",
@@ -197,6 +255,5 @@ class TranscriberController extends Controller
             }
             return redirect()->back()->with('message', $message);
         }
-
     }
 }

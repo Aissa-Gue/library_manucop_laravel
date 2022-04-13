@@ -5,11 +5,13 @@ $subNavs = [
         'text' => 'إضافة مؤلف',
         'icon' => 'fas fa-user-plus',
         'route' => 'authors.create',
+        'request' => 'authors/*',
     ],
     [
         'text' => 'إضافة كتاب',
         'icon' => 'fas fa-book-medical',
         'route' => 'books.create',
+        'request' => 'books/*',
     ],
 ];
 ?>

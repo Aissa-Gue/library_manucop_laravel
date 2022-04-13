@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Author;
+use App\Models\Book;
+use App\Models\Manuscript;
+use App\Models\Transcriber;
 use Illuminate\Http\Request;
+use stdClass;
 
 class DashboardController extends Controller
 {
@@ -11,74 +16,61 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function index()
     {
-        //
+        //return $this->bySubjects2();
+        return view('dashboard.index')
+            ->with('cards', $this->cards())
+            ->with('by_save_status', $this->bySaveStatus())
+            ->with('by_cabinets', $this->byCabinets())
+            ->with('by_subjects1', $this->bySubjects1())
+            ->with('by_subjects2', $this->bySubjects2());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function cards()
     {
-        //
+        $cards = new stdClass();
+        $cards->manuscripts = Manuscript::count();
+        $cards->transcribers = Transcriber::count();
+        $cards->books = Book::count();
+        $cards->authors = Author::count();
+        return $cards;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function bySaveStatus()
     {
-        //
+        return Manuscript::groupBy('save_status')
+            ->selectRaw('count(*) as total, save_status')
+            ->get();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function byCabinets()
     {
-        //
+        return Manuscript::with('cabinet')
+            ->groupBy('cabinet_id')
+            ->selectRaw('count(*) as total, cabinet_id')
+            ->get();
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
+    public function bySubjects1()
     {
-        //
+        return Manuscript::join('book_subjects', 'book_subjects.book_id', 'manuscripts.book_id')
+            ->join('subjects', 'subjects.id', 'book_subjects.subject_id')
+            ->groupBy('subject_id')
+            ->orderBy('subject_id')
+            ->selectRaw('count(*) as total, manuscripts.book_id, subject_id, subjects.name')
+            ->get();
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function bySubjects2()
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return Book::join('book_subjects', 'book_subjects.book_id', 'books.id')
+            ->join('subjects', 'subjects.id', 'book_subjects.subject_id')
+            ->groupBy('subject_id')
+            ->orderBy('subject_id')
+            ->selectRaw('count(*) as total, books.id, subject_id, subjects.name')
+            ->get();
     }
 }

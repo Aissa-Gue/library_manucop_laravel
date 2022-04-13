@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\ManuscriptController;
@@ -39,16 +40,49 @@ Route::get('/', function () {
 
 
 Route::group(['middleware' => 'auth'], function () {
+    /** home */
     Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-    Route::resource('settings', SettingController::class);
-    Route::resource('dashboard', DashboardController::class);
-    Route::resource('users', UserController::class);
+    /** dashboard */
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
+    /** search */
+    Route::view('/search/results', 'search.results')->name('search.results');
+    //search in manuscripts
+    Route::view('/search/quick/manuscripts', 'search.quick')->name('search.quick.manuscripts');
+    Route::get('/search/quick/manuscripts/results', [ManuscriptController::class, 'quickSearch'])->name('search.quick.manuSearch');
+    Route::view('/search/advanced/manuscripts', 'search.advanced')->name('search.advanced.manuscripts');
+    //search in transcribers
+    Route::view('/search/quick/transcribers', 'search.quick')->name('search.quick.transcribers');
+    Route::get('/search/quick/transcribers/results', [TranscriberController::class, 'quickSearch'])->name('search.quick.transSearch');
+    Route::view('/search/advanced/transcribers', 'search.advanced')->name('search.advanced.transcribers');
+    //search in books
+    Route::view('/search/quick/books', 'search.quick')->name('search.quick.books');
+    Route::get('/search/quick/books/results', [BookController::class, 'quickSearch'])->name('search.quick.bookSearch');
+    Route::view('/search/advanced/books', 'search.advanced')->name('search.advanced.books');
+
+    /** users */
+    Route::get('/settings/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/settings/users', [UserController::class, 'store'])->name('users.store');
+    Route::put('/settings/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/settings/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    /** database */
+    Route::get('/settings/database', [SettingController::class, 'index'])->name('settings.index');
+    Route::get('/settings/importDB', [SettingController::class, 'importDB'])->name('importDB');
+    Route::get('/settings/exportDB', [SettingController::class, 'exportDB'])->name('exportDB');
+    Route::get('/settings/dropDB', [SettingController::class, 'dropDB'])->name('dropDB');
+
+    /** countries */
     Route::resource('countries', CountryController::class)->except('show');
+
+    /** cities */
     Route::resource('cities', CityController::class)->except('show');
 
+    /** transcribers */
     Route::resource('transcribers', TranscriberController::class);
+
+    /** authors */
     Route::resource('authors', AuthorController::class);
 
     /** books */

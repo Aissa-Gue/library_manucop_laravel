@@ -37,6 +37,59 @@ class ManuscriptController extends Controller
         return view('manuscripts.index')->with('manuscripts', $manuscripts);
     }
 
+
+
+    public function quickSearch(Request $request)
+    {
+        $manuscripts = Manuscript::with('transcribers', 'book', 'country', 'city', 'book.authors')
+            ->whereHas('book', function ($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->book . '%');
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('book.authors')
+                    ->orWhereHas('book.authors', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->author . '%');
+                    });
+            })
+            ->whereHas('transcribers', function ($query) use ($request) {
+                $query->select(DB::raw("CONCAT(full_name, ' ', IFNULL(descent1,''),' ', IFNULL(descent2,''),' ', IFNULL(descent3,''),' ',IFNULL(descent4,''), ' ',IFNULL(descent5,''), ' ',IFNULL(other_name1,''),' ',IFNULL(other_name2,''),' ',IFNULL(other_name3,''),' ',IFNULL(other_name4,'')) as full_name_descent_other"))
+                    ->having('full_name_descent_other', 'LIKE', '%' . $request->transcriber . '%');
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('country')
+                    ->orWhereHas('country', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->country . '%');
+                    });
+            })
+            ->where(function ($query) use ($request) {
+                $query->doesntHave('city')
+                    ->orWhereHas('city', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->city . '%');
+                    });
+            })
+            ->where(function ($query) use ($request) {
+                $query->where('trans_syear', '>=', $request->trans_syear ?? 0)
+                    ->orWhereNull('trans_syear');
+            })
+            ->where(function ($query) use ($request) {
+                $query->where('trans_eyear', '<=', $request->trans_eyear ?? 999999)
+                    ->orWhereNull('trans_eyear');
+            })
+            ->where(function ($query) use ($request) {
+                $query->where('trans_syear_m', '>=', $request->trans_syear_m ?? 0)
+                    ->orWhereNull('trans_syear_m');
+            })
+            ->where(function ($query) use ($request) {
+                $query->where('trans_eyear_m', '<=', $request->trans_eyear_m ?? 999999)
+                    ->orWhereNull('trans_eyear_m');
+            })
+            ->paginate(35)
+            ->withQueryString();
+
+        return view('search.results')->with('manuscripts', $manuscripts);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *
@@ -166,118 +219,6 @@ class ManuscriptController extends Controller
             ->with('transcriberMatchers', $transcriberMatchers);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $this->validateForm($request);
-
-        DB::beginTransaction();
-        try {
-            $manuscript = Manuscript::create($request->except([
-                'transcriber1_id', 'transcriber2_id',
-                'transcriber3_id', 'transcriber4_id',
-                'name_in_manu1', 'name_in_manu2',
-                'name_in_manu3', 'name_in_manu4',
-                'fontMatchers1', 'fontMatchers2', 'fontMatchers3', 'fontMatchers4',
-                'color_ids',
-                'manutype_ids',
-                'motif_ids'
-            ]));
-
-            // update colors
-            ManuscriptColor::where('manuscript_id', $id)->delete();
-            if (!empty($request->color_ids)) {
-                foreach ($request->color_ids as $color_id) {
-                    ManuscriptColor::where('manuscript_id', $id)->create([
-                        'manuscript_id' => $id,
-                        'color_id' => $color_id,
-                    ]);
-                }
-            }
-
-            // update manutypes
-            ManuscriptManutype::where('manuscript_id', $id)->delete();
-            if (!empty($request->manutype_ids)) {
-                foreach ($request->manutype_ids as $manutype_id) {
-                    ManuscriptManutype::create([
-                        'manuscript_id' => $id,
-                        'manutype_id' => $manutype_id,
-                    ]);
-                }
-            }
-
-            // update motifs
-            ManuscriptMotif::where('manuscript_id', $id)->delete();
-            if (!empty($request->motif_ids)) {
-                foreach ($request->motif_ids as $motif_id) {
-                    ManuscriptMotif::create([
-                        'manuscript_id' => $id,
-                        'motif_id' => $motif_id,
-                    ]);
-                }
-            }
-
-            // update Transcribers & FontMatchers
-            $transcriber_id1 = $request->transcriber1_id;
-            $transcriber_id2 = $request->transcriber2_id;
-            $transcriber_id3 = $request->transcriber3_id;
-            $transcriber_id4 = $request->transcriber4_id;
-            $name_in_manu1 = $request->name_in_manu1;
-            $name_in_manu2 = $request->name_in_manu2;
-            $name_in_manu3 = $request->name_in_manu3;
-            $name_in_manu4 = $request->name_in_manu4;
-
-            $fontMatchers1 = $request->fontMatchers1;
-            $fontMatchers2 = $request->fontMatchers2;
-            $fontMatchers3 = $request->fontMatchers3;
-            $fontMatchers4 = $request->fontMatchers4;
-
-            ManuscriptTranscriber::where('manuscript_id', $id)->delete();
-            for ($i = 1; $i <= 4; $i++) {
-                if (${'transcriber_id' . $i} != null) {
-                    ManuscriptTranscriber::create([
-                        'manuscript_id' => $manuscript->id,
-                        'transcriber_id' => ${'transcriber_id' . $i},
-                        'name_in_manu' => $request->{'name_in_manu' . $i},
-                    ]);
-                }
-            }
-
-            MatchingFont::where('manuscript_id', $id)->delete();
-            for ($i = 1; $i <= 4; $i++) {
-                if (!empty(${'fontMatchers' . $i})) {
-                    foreach (${'fontMatchers' . $i} as $fontMatcher) {
-                        MatchingFont::create([
-                            'manuscript_id' => $manuscript->id,
-                            'transcriber_id' => ${'transcriber_id' . $i},
-                            'transcriber2_id' => $fontMatcher,
-                        ]);
-                    }
-                }
-            }
-
-            DB::commit();
-            $message = [
-                "label" => "تم تعديل الاستمارة بنجاح",
-                "bg" => "bg-success",
-            ];
-            return redirect()->route('manuscripts.show', $id)
-                ->with('message', $message);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            $message = [
-                "label" => "حدثت مشكلة، لم يتم تعديل الاستمارة",
-                "bg" => "bg-danger",
-            ];
-            return redirect()->back()->with('message', $message);
-        }
-    }
 
     /**
      * Remove the specified resource from storage.

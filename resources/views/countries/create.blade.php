@@ -4,11 +4,13 @@ $subNavs = [
         'text' => 'إضافة بلد',
         'icon' => 'fas fa-globe',
         'route' => 'countries.index',
+        'request' => 'countries',
     ],
     [
         'text' => 'إضافة مدينة',
         'icon' => 'fas fa-city',
         'route' => 'cities.index',
+        'request' => 'cities',
     ],
 ];
 ?>
