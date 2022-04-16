@@ -15,7 +15,7 @@ class CountrySearch extends Component
 
     public function countries()
     {
-        return $countries = Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(25);
+        return $countries = Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(40);
     }
 
     public function render()

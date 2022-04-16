@@ -14,23 +14,42 @@
     </div>
 
     <div class="row justify-content-center mb-3">
-        <div class="col-md-8">
+        <div class="col-md-7">
             <div class="form-floating">
-                <input type="text" class="form-select" name="author" id="author" list="authors" wire:model="author">
+                <input type="text" class="form-select" id="author" list="authors" wire:model="author"
+                    onchange="getAuthor()">
                 <label for="author">المؤلف</label>
                 <datalist id="authors">
                     @foreach ($authors as $author)
                         <option value="{{ $author->name }}" data-id="{{ $author->id }}">
                     @endforeach
                 </datalist>
+                <!--- List of authors badges -->
+                <div id="authorsBadges">
+                    @foreach ($authorsArray as $author)
+                        <p class="badge rounded-pill bg-success mx-1 p-2 mt-2">
+                            {{ $author }}
+                            <a wire:click="deleteAuthor('{{ $author }}')"
+                                onclick="deleteAuthor('{{ $author }}')" style="cursor: pointer"
+                                class="text-white text-decoration-none mx-1"> <i class="fas fa-times"></i>
+                            </a>
+                        </p>
+                    @endforeach
+                </div>
             </div>
+        </div>
+        <!--- add author icon -->
+        <div class="col-md-1"><br>
+            <a style="cursor: pointer" wire:click="pushToAuthors(author_name)" onclick="setAuthors()">
+                <i class="fas fa-plus-circle fs-4"></i>
+            </a>
         </div>
     </div>
 
     <div class="row justify-content-center mb-3">
         <div class="col-md-7">
             <div class="form-floating">
-                <input type="text" class="form-select multidatalist" id="subject" list="subjects" wire:model="subject"
+                <input type="text" class="form-select" id="subject" list="subjects" wire:model="subject"
                     onchange="getSubject()">
                 <label for="subject">المواضيع</label>
                 <datalist id="subjects">

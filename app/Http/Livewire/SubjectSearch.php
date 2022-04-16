@@ -15,13 +15,13 @@ class SubjectSearch extends Component
 
     public function subjects()
     {
-        return $subjects = Subject::where('name','LIKE', '%'.$this->subject.'%')->paginate(20);
+        return $subjects = Subject::where('name', 'LIKE', '%' . $this->subject . '%')->paginate(40);
     }
 
     public function render()
     {
         return view('livewire.subject-search')
-            ->with('subjects',$this->subjects())
-            ->with('subjectLivewire',$this->subjectLivewire);
+            ->with('subjects', $this->subjects())
+            ->with('subjectLivewire', $this->subjectLivewire);
     }
 }

@@ -46,42 +46,228 @@ class ManuscriptController extends Controller
                 $query->where('title', 'like', '%' . $request->book . '%');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('book.authors')
-                    ->orWhereHas('book.authors', function ($query) use ($request) {
+                if ($request->author !== null)
+                    $query->whereHas('book.authors', function ($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->author . '%');
                     });
+                //->orDoesntHave('book.authors');
             })
             ->whereHas('transcribers', function ($query) use ($request) {
                 $query->select(DB::raw("CONCAT(full_name, ' ', IFNULL(descent1,''),' ', IFNULL(descent2,''),' ', IFNULL(descent3,''),' ',IFNULL(descent4,''), ' ',IFNULL(descent5,''), ' ',IFNULL(other_name1,''),' ',IFNULL(other_name2,''),' ',IFNULL(other_name3,''),' ',IFNULL(other_name4,'')) as full_name_descent_other"))
                     ->having('full_name_descent_other', 'LIKE', '%' . $request->transcriber . '%');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('country')
-                    ->orWhereHas('country', function ($query) use ($request) {
+                if ($request->country !== null)
+                    $query->whereHas('country', function ($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->country . '%');
-                    });
+                    }); //->orDoesntHave('country');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('city')
-                    ->orWhereHas('city', function ($query) use ($request) {
+                if ($request->city !== null)
+                    $query->whereHas('city', function ($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->city . '%');
                     });
+                //->orDoesntHave('city');
             })
             ->where(function ($query) use ($request) {
-                $query->where('trans_syear', '>=', $request->trans_syear ?? 0)
-                    ->orWhereNull('trans_syear');
+                if ($request->trans_syear !== null)
+                    $query->where('trans_syear', '>=', $request->trans_syear);
+                //->orWhereNull('trans_syear');
             })
             ->where(function ($query) use ($request) {
-                $query->where('trans_eyear', '<=', $request->trans_eyear ?? 999999)
-                    ->orWhereNull('trans_eyear');
+                if ($request->trans_eyear !== null)
+                    $query->where('trans_eyear', '<=', $request->trans_eyear);
+                //->orWhereNull('trans_eyear');
             })
             ->where(function ($query) use ($request) {
-                $query->where('trans_syear_m', '>=', $request->trans_syear_m ?? 0)
-                    ->orWhereNull('trans_syear_m');
+                if ($request->trans_syear_m !== null)
+                    $query->where('trans_syear_m', '>=', $request->trans_syear_m);
+                //->orWhereNull('trans_syear_m');
             })
             ->where(function ($query) use ($request) {
-                $query->where('trans_eyear_m', '<=', $request->trans_eyear_m ?? 999999)
-                    ->orWhereNull('trans_eyear_m');
+                if ($request->trans_eyear_m !== null)
+                    $query->where('trans_eyear_m', '<=', $request->trans_eyear_m);
+                //->orWhereNull('trans_eyear_m');
+            })
+            ->paginate(35)
+            ->withQueryString();
+
+        return view('search.results')->with('manuscripts', $manuscripts);
+    }
+
+    public function advancedSearch(Request $request)
+    {
+        $manuscripts = Manuscript::with('transcribers', 'book', 'country', 'city', 'book.authors')
+            ->whereHas('book', function ($query) use ($request) {
+                $query->where('title', 'like', '%' . $request->book . '%');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->authors !== null)
+                    $query->whereHas('book.authors', function ($query) use ($request) {
+                        $query->whereIn('name', $request->authors);
+                    });
+                //->orDoesntHave('book.authors');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->subjects !== null)
+                    $query->whereHas('book.subjects', function ($query) use ($request) {
+                        $query->whereIn('name', $request->subjects);
+                    });
+                //->orDoesntHave('book.subjects');
+            })
+            ->whereHas('transcribers', function ($query) use ($request) {
+                $query->select(DB::raw("CONCAT(full_name, ' ', IFNULL(descent1,''),' ', IFNULL(descent2,''),' ', IFNULL(descent3,''),' ',IFNULL(descent4,''), ' ',IFNULL(descent5,''), ' ',IFNULL(other_name1,''),' ',IFNULL(other_name2,''),' ',IFNULL(other_name3,''),' ',IFNULL(other_name4,'')) as full_name_descent_other"))
+                    ->having('full_name_descent_other', 'LIKE', '%' . $request->transcriber . '%');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transCountry !== null)
+                    $query->whereHas('transcribers.country', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->transCountry . '%');
+                    });
+                //->orDoesntHave('transcribers.country');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transCity !== null)
+                    $query->whereHas('transcribers.city', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->transCity . '%');
+                    });
+                //->orDoesntHave('transcribers.city');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->cabinet !== null)
+                    $query->whereHas('cabinet', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->cabinet . '%');
+                    });
+                //->orDoesntHave('cabinet');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transcribed_from !== null)
+                    $query->where('transcribed_from', 'like', '%' . $request->transcribed_from . '%');
+                //->orWhereNull('transcribed_from');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transcribed_to !== null)
+                    $query->where('transcribed_to', 'like', '%' . $request->transcribed_to . '%');
+                //->orWhereNull('transcribed_to');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->regular_lines !== null)
+                    $query->where('regular_lines', $request->regular_lines);
+                //->orWhereNull('regular_lines');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->is_truncated !== null)
+                    $query->where('is_truncated', $request->is_truncated);
+                //->orWhereNull('is_truncated');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->signed_in !== null)
+                    $query->where('signed_in', $request->signed_in);
+                //->orWhereNull('signed_in');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->rost_completion !== null)
+                    $query->where('rost_completion', $request->rost_completion);
+                //->orWhereNull('rost_completion');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->font !== null)
+                    $query->where('font', $request->font);
+                //->orWhereNull('font');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->font_style !== null)
+                    $query->where('font_style', $request->font_style);
+                //->orWhereNull('font_style');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->manuscript_level !== null)
+                    $query->where('manuscript_level', $request->manuscript_level);
+                //->orWhereNull('manuscript_level');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transcriber_level !== null)
+                    $query->where('transcriber_level', $request->transcriber_level);
+                //->orWhereNull('transcriber_level');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->paper_size !== null)
+                    $query->where('paper_size', $request->paper_size);
+                //->orWhereNull('paper_size');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->save_status !== null)
+                    $query->where('save_status', $request->save_status);
+                //->orWhereNull('save_status');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->nbr_in_index !== null)
+                    $query->where('nbr_in_index', $request->nbr_in_index);
+                //->orWhereNull('nbr_in_index');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->nbr_in_cabinet !== null)
+                    $query->where('nbr_in_cabinet', $request->nbr_in_cabinet);
+                //->orWhereNull('nbr_in_cabinet');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->manu_type !== null)
+                    $query->where('manu_type', $request->manu_type);
+                //->orWhereNull('manu_type');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->country !== null)
+                    $query->whereHas('country', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->country . '%');
+                    }); //->orDoesntHave('country');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->city !== null)
+                    $query->whereHas('city', function ($query) use ($request) {
+                        $query->where('name', 'like', '%' . $request->city . '%');
+                    });
+                //->orDoesntHave('city');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->trans_syear !== null)
+                    $query->where('trans_syear', '>=', $request->trans_syear);
+                //->orWhereNull('trans_syear');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->trans_eyear !== null)
+                    $query->where('trans_eyear', '<=', $request->trans_eyear);
+                //->orWhereNull('trans_eyear');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->trans_syear_m !== null)
+                    $query->where('trans_syear_m', '>=', $request->trans_syear_m);
+                //->orWhereNull('trans_syear_m');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->trans_eyear_m !== null)
+                    $query->where('trans_eyear_m', '<=', $request->trans_eyear_m);
+                //->orWhereNull('trans_eyear_m');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->manutypes !== null)
+                    $query->whereHas('manutypes', function ($query) use ($request) {
+                        $query->whereIn('name', $request->manutypes);
+                    });
+                //->OrDoesntHave('manutypes');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->colors !== null)
+                    $query->whereHas('colors', function ($query) use ($request) {
+                        $query->whereIn('name', $request->colors);
+                    });
+                //->orDoesntHave('colors');
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->motifs !== null)
+                    $query->whereHas('motifs', function ($query) use ($request) {
+                        $query->whereIn('name', $request->motifs);
+                    });
+                //->orDoesntHave('motifs');
             })
             ->paginate(35)
             ->withQueryString();

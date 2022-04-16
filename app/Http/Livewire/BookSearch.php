@@ -21,7 +21,7 @@ class BookSearch extends Component
 
     public function books()
     {
-        return $books = Book::where('title', 'LIKE', '%' . $this->book . '%')->paginate(25);
+        return $books = Book::where('title', 'LIKE', '%' . $this->book . '%')->paginate(40);
     }
 
     public function render()

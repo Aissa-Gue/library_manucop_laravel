@@ -23,38 +23,38 @@ class TranscriberSearch extends Component
 
     public function transcribers1()
     {
-        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber1 . '%')->paginate(25);
+        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber1 . '%')->paginate(40);
     }
     public function transcribers2()
     {
-        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber2 . '%')->paginate(25);
+        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber2 . '%')->paginate(40);
     }
     public function transcribers3()
     {
-        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber3 . '%')->paginate(25);
+        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber3 . '%')->paginate(40);
     }
     public function transcribers4()
     {
-        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber4 . '%')->paginate(25);
+        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber4 . '%')->paginate(40);
     }
 
 
 
     public function fontMatchers1()
     {
-        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher1 . '%')->paginate(25);
+        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher1 . '%')->paginate(40);
     }
     public function fontMatchers2()
     {
-        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher2 . '%')->paginate(25);
+        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher2 . '%')->paginate(40);
     }
     public function fontMatchers3()
     {
-        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher3 . '%')->paginate(25);
+        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher3 . '%')->paginate(40);
     }
     public function fontMatchers4()
     {
-        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher4 . '%')->paginate(25);
+        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher4 . '%')->paginate(40);
     }
 
 

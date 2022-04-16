@@ -52,14 +52,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('/search/quick/manuscripts', 'search.quick')->name('search.quick.manuscripts');
     Route::get('/search/quick/manuscripts/results', [ManuscriptController::class, 'quickSearch'])->name('search.quick.manuSearch');
     Route::view('/search/advanced/manuscripts', 'search.advanced')->name('search.advanced.manuscripts');
+    Route::get('/search/advanced/manuscripts/results', [ManuscriptController::class, 'advancedSearch'])->name('search.advanced.manuSearch');
     //search in transcribers
     Route::view('/search/quick/transcribers', 'search.quick')->name('search.quick.transcribers');
     Route::get('/search/quick/transcribers/results', [TranscriberController::class, 'quickSearch'])->name('search.quick.transSearch');
-    Route::view('/search/advanced/transcribers', 'search.advanced')->name('search.advanced.transcribers');
     //search in books
     Route::view('/search/quick/books', 'search.quick')->name('search.quick.books');
     Route::get('/search/quick/books/results', [BookController::class, 'quickSearch'])->name('search.quick.bookSearch');
-    Route::view('/search/advanced/books', 'search.advanced')->name('search.advanced.books');
 
     /** users */
     Route::get('/settings/users', [UserController::class, 'index'])->name('users.index');

@@ -16,7 +16,7 @@ class AuthorSearch extends Component
 
     public function authors()
     {
-        return $authors = Author::where('name', 'LIKE', '%' . $this->author . '%')->paginate(25);
+        return $authors = Author::where('name', 'LIKE', '%' . $this->author . '%')->paginate(40);
     }
 
     public function pushToAuthors($id, $value)

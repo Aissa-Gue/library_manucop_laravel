@@ -36,52 +36,60 @@ class TranscriberController extends Controller
                     ->having('full_name_descent_other', 'LIKE', '%' . $request->transcriber . '%');
             })
             ->where(function ($query) use ($request) {
-                $query->where('last_name', 'like', '%' . $request->last_name . '%')
-                    ->orWhereNull('last_name');
+                if ($request->last_name !== null)
+                    $query->where('last_name', 'like', '%' . $request->last_name . '%');
+                //->orWhereNull('last_name');
             })
             ->where(function ($query) use ($request) {
-                $query->where('nickname', 'like', '%' . $request->nickname . '%')
-                    ->orWhereNull('nickname');
+                if ($request->nickname !== null)
+                    $query->where('nickname', 'like', '%' . $request->nickname . '%');
+                //->orWhereNull('nickname');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('country')
-                    ->orWhereHas('country', function ($query) use ($request) {
+                if ($request->country !== null)
+                    $query->whereHas('country', function ($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->country . '%');
                     });
+                //->orDoesntHave('country');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('city')
-                    ->orWhereHas('city', function ($query) use ($request) {
+                if ($request->city !== null)
+                    $query->whereHas('city', function ($query) use ($request) {
                         $query->where('name', 'like', '%' . $request->city . '%');
                     });
+                //->orDoesntHave('city');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('manuscripts')
-                    ->orWhereHas('manuscripts', function ($query) use ($request) {
-                        $query->where('trans_syear', '>=', $request->trans_syear ?? 0)
-                            ->orWhereNull('trans_syear');
+                if ($request->trans_syear !== null)
+                    $query->whereHas('manuscripts', function ($query) use ($request) {
+                        $query->where('trans_syear', '>=', $request->trans_syear);
+                        //->orWhereNull('trans_syear');
                     });
+                //->orDoesntHave('manuscripts')
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('manuscripts')
-                    ->orWhereHas('manuscripts', function ($query) use ($request) {
-                        $query->where('trans_eyear', '<=', $request->trans_eyear ?? 999999)
-                            ->orWhereNull('trans_eyear');
+                if ($request->trans_eyear !== null)
+                    $query->whereHas('manuscripts', function ($query) use ($request) {
+                        $query->where('trans_eyear', '<=', $request->trans_eyear);
+                        //->orWhereNull('trans_eyear');
                     });
+                //->orDoesntHave('manuscripts');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('manuscripts')
-                    ->orWhereHas('manuscripts', function ($query) use ($request) {
-                        $query->where('trans_syear_m', '>=', $request->trans_syear_m ?? 0)
-                            ->orWhereNull('trans_syear_m');
+                if ($request->trans_syear_m !== null)
+                    $query->whereHas('manuscripts', function ($query) use ($request) {
+                        $query->where('trans_syear_m', '>=', $request->trans_syear_m);
+                        //->orWhereNull('trans_syear_m');
                     });
+                //->orDoesntHave('manuscripts');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('manuscripts')
-                    ->orWhereHas('manuscripts', function ($query) use ($request) {
-                        $query->where('trans_eyear_m', '<=', $request->trans_eyear_m ?? 999999)
-                            ->orWhereNull('trans_eyear_m');
+                if ($request->trans_eyear_m !== null)
+                    $query->whereHas('manuscripts', function ($query) use ($request) {
+                        $query->where('trans_eyear_m', '<=', $request->trans_eyear_m);
+                        //->orWhereNull('trans_eyear_m');
                     });
+                //->orDoesntHave('manuscripts');
             })
             ->paginate(35)
             ->withQueryString();

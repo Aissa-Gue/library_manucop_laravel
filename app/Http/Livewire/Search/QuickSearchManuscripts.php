@@ -17,28 +17,26 @@ class QuickSearchManuscripts extends Component
     public $author;
     public $book;
     public $transcriber;
-    public $syear;
-    public $eyear;
 
 
     public function countries()
     {
-        return Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(25);
+        return Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(40);
     }
 
     public function cities()
     {
-        return City::where('name', 'LIKE', '%' . $this->city . '%')->paginate(25);
+        return City::where('name', 'LIKE', '%' . $this->city . '%')->paginate(40);
     }
 
     public function authors()
     {
-        return Author::where('name', 'LIKE', '%' . $this->author . '%')->paginate(25);
+        return Author::where('name', 'LIKE', '%' . $this->author . '%')->paginate(40);
     }
 
     public function books()
     {
-        return Book::where('title', 'LIKE', '%' . $this->book . '%')->paginate(25);
+        return Book::where('title', 'LIKE', '%' . $this->book . '%')->paginate(40);
     }
 
     public function transcribers()

@@ -15,7 +15,7 @@ class CitySearch extends Component
 
     public function cities()
     {
-        return $cities = City::where('name', 'LIKE', '%' . $this->city . '%')->paginate(25);
+        return $cities = City::where('name', 'LIKE', '%' . $this->city . '%')->paginate(40);
     }
 
     public function render()

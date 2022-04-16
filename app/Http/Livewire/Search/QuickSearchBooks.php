@@ -13,24 +13,25 @@ class QuickSearchBooks extends Component
     public $author;
     public $subject;
     public $subjectsArray = [];
+    public $authorsArray = [];
 
 
     public function books()
     {
-        return Book::where('title', 'LIKE', '%' . $this->book . '%')->paginate(35);
+        return Book::where('title', 'LIKE', '%' . $this->book . '%')->paginate(40);
     }
 
     public function authors()
     {
-        return Author::where('name', 'LIKE', '%' . $this->author . '%')->paginate(35);
+        return Author::where('name', 'LIKE', '%' . $this->author . '%')->paginate(40);
     }
 
     public function subjects()
     {
-        return Subject::where('name', 'LIKE', '%' . $this->subject . '%')->paginate(35);
+        return Subject::where('name', 'LIKE', '%' . $this->subject . '%')->paginate(40);
     }
 
-    //Subjects
+    /***** Subjects *****/
     public function pushToSubjects($name)
     {
         if ($name != null && !in_array($name, $this->subjectsArray)) {
@@ -45,6 +46,26 @@ class QuickSearchBooks extends Component
         foreach ($this->subjectsArray as $subject) {
             if ($subject == $name) {
                 unset($this->subjectsArray[$i]);
+            }
+            $i++;
+        }
+    }
+
+    /***** Authors *****/
+    public function pushToAuthors($name)
+    {
+        if ($name != null && !in_array($name, $this->authorsArray)) {
+            array_push($this->authorsArray,  $name);
+            $this->author = null;
+        }
+    }
+
+    public function deleteAuthor($name)
+    {
+        $i = 0;
+        foreach ($this->authorsArray as $author) {
+            if ($author == $name) {
+                unset($this->authorsArray[$i]);
             }
             $i++;
         }

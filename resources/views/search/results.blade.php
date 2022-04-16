@@ -1,7 +1,7 @@
     @extends('layouts.app')
     @section('content')
         <div class="container">
-            @if (Route::is('search.quick.manuSearch'))
+            @if (Route::is('search.quick.manuSearch', 'search.advanced.manuSearch'))
                 <div class="alert alert-primary text-center fw-bold"> نتائج البحث في الاستمارات </div>
                 <table class="table table-hover">
                     <thead class="table-primary">

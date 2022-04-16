@@ -35,17 +35,18 @@ class BookController extends Controller
                 $query->where('title', 'like', '%' . $request->book . '%');
             })
             ->where(function ($query) use ($request) {
-                $query->doesntHave('authors')
-                    ->orWhereHas('authors', function ($query) use ($request) {
-                        $query->where('name', 'like', '%' . $request->author . '%');
+                if ($request->authors !== null)
+                    $query->whereHas('authors', function ($query) use ($request) {
+                        $query->whereIn('name', $request->authors);
                     });
+                //->orDoesntHave('authors');
             })
-
             ->where(function ($query) use ($request) {
-                $query->doesntHave('subjects')
-                    ->orWhereHas('subjects', function ($query) use ($request) {
-                        if (!empty($request->subjects)) $query->whereIn('name', $request->subjects);
+                if ($request->subjects !== null)
+                    $query->whereHas('subjects', function ($query) use ($request) {
+                        $query->whereIn('name', $request->subjects);
                     });
+                //->orDdoesntHave('subjects');
             })
             ->paginate(35)
             ->withQueryString();

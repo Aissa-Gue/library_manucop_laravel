@@ -119,63 +119,63 @@ class CreateManuscript extends Component
 
     public function transcribers1()
     {
-        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber1 . '%')->paginate(25);
+        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber1 . '%')->paginate(40);
     }
 
     public function fontMatchers1()
     {
-        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher1 . '%')->paginate(25);
+        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher1 . '%')->paginate(40);
     }
 
     public function transcribers2()
     {
-        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber2 . '%')->paginate(25);
+        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber2 . '%')->paginate(40);
     }
 
     public function fontMatchers2()
     {
-        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher2 . '%')->paginate(25);
+        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher2 . '%')->paginate(40);
     }
 
     public function transcribers3()
     {
-        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber3 . '%')->paginate(25);
+        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber3 . '%')->paginate(40);
     }
 
     public function fontMatchers3()
     {
-        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher3 . '%')->paginate(25);
+        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher3 . '%')->paginate(40);
     }
 
 
     public function transcribers4()
     {
-        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber4 . '%')->paginate(25);
+        return $transcribers = Transcriber::where('full_name', 'LIKE', '%' . $this->transcriber4 . '%')->paginate(40);
     }
 
     public function fontMatchers4()
     {
-        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher4 . '%')->paginate(25);
+        return $fontMatchers = Transcriber::where('full_name', 'LIKE', '%' . $this->fontMatcher4 . '%')->paginate(40);
     }
 
     public function books()
     {
-        return $books = Book::where('title', 'LIKE', '%' . $this->book . '%')->paginate(25);
+        return $books = Book::where('title', 'LIKE', '%' . $this->book . '%')->paginate(40);
     }
 
     public function cabinets()
     {
-        return Cabinet::where('name', 'LIKE', '%' . $this->cabinet . '%')->paginate(25);
+        return Cabinet::where('name', 'LIKE', '%' . $this->cabinet . '%')->paginate(40);
     }
 
     public function cities()
     {
-        return $cities = City::where('name', 'LIKE', '%' . $this->city . '%')->paginate(25);
+        return $cities = City::where('name', 'LIKE', '%' . $this->city . '%')->paginate(40);
     }
 
     public function countries()
     {
-        return $countries = Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(25);
+        return $countries = Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(40);
     }
 
     public function motifs()
