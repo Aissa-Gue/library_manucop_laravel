@@ -47,7 +47,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
     /** search */
-    Route::view('/search/results', 'search.results')->name('search.results');
     //search in manuscripts
     Route::view('/search/quick/manuscripts', 'search.quick')->name('search.quick.manuscripts');
     Route::get('/search/quick/manuscripts/results', [ManuscriptController::class, 'quickSearch'])->name('search.quick.manuSearch');
@@ -68,9 +67,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     /** database */
     Route::get('/settings/database', [SettingController::class, 'index'])->name('settings.index');
-    Route::get('/settings/importDB', [SettingController::class, 'importDB'])->name('importDB');
     Route::get('/settings/exportDB', [SettingController::class, 'exportDB'])->name('exportDB');
-    Route::get('/settings/dropDB', [SettingController::class, 'dropDB'])->name('dropDB');
+    Route::post('/settings/importDB', [SettingController::class, 'importDB'])->name('importDB');
+    Route::delete('/settings/dropDB', [SettingController::class, 'dropDB'])->name('dropDB');
 
     /** countries */
     Route::resource('countries', CountryController::class)->except('show');

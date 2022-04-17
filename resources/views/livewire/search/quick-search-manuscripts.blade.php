@@ -37,7 +37,7 @@
                     <label for="transcriber">الناسخ</label>
                     <datalist id="transcribers">
                         @foreach ($transcribers as $transcriber)
-                            <option value="{{ $transcriber->full_name_descent }}" data-id="{{ $transcriber->id }}">
+                            <option value="{{ $transcriber->full_name_all }}" data-id="{{ $transcriber->id }}">
                         @endforeach
                     </datalist>
                 </div>

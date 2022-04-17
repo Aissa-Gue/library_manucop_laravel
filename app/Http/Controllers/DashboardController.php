@@ -25,7 +25,10 @@ class DashboardController extends Controller
             ->with('by_save_status', $this->bySaveStatus())
             ->with('by_cabinets', $this->byCabinets())
             ->with('by_subjects1', $this->bySubjects1())
-            ->with('by_subjects2', $this->bySubjects2());
+            ->with('by_subjects2', $this->bySubjects2())
+            ->with('by_manutypes', $this->byManutypes())
+            ->with('by_manuscript_level', $this->byManuscriptLevel())
+            ->with('by_transcriber_level', $this->byTranscriberLevel());
     }
 
 
@@ -48,8 +51,7 @@ class DashboardController extends Controller
 
     public function byCabinets()
     {
-        return Manuscript::with('cabinet')
-            ->groupBy('cabinet_id')
+        return Manuscript::groupBy('cabinet_id')
             ->selectRaw('count(*) as total, cabinet_id')
             ->get();
     }
@@ -71,6 +73,33 @@ class DashboardController extends Controller
             ->groupBy('subject_id')
             ->orderBy('subject_id')
             ->selectRaw('count(*) as total, books.id, subject_id, subjects.name')
+            ->get();
+    }
+
+    public function byManutypes()
+    {
+        return Manuscript::join('manuscript_manutypes', 'manuscript_manutypes.manuscript_id', 'manuscripts.id')
+            ->join('manutypes', 'manutypes.id', 'manuscript_manutypes.manutype_id')
+            ->groupBy('manutype_id')
+            ->selectRaw('count(*) as total, manutypes.name')
+            ->get();
+    }
+
+    public function byManuscriptLevel()
+    {
+        return Manuscript::groupBy('manuscript_level')
+            ->whereNotNull('manuscript_level')
+            ->orderBy('manuscript_level')
+            ->selectRaw('count(*) as total, manuscript_level')
+            ->get();
+    }
+
+    public function byTranscriberLevel()
+    {
+        return Manuscript::groupBy('transcriber_level')
+            ->whereNotNull('transcriber_level')
+            ->orderBy('transcriber_level')
+            ->selectRaw('count(*) as total, transcriber_level')
             ->get();
     }
 }

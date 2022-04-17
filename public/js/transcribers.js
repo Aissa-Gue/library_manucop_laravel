@@ -1,3 +1,21 @@
+/***** get the id of a datalist option ***/
+
+// add hidden input contains data-id of selected value (datalist single select)
+function getId(input_id, datalist_id, hidden_input_id) {
+    var val = $(input_id).val();
+    var dataid = $(datalist_id + " option")
+        .filter(function () {
+            return this.value === val;
+        })
+        .data("id");
+    if (dataid == null) {
+        document.getElementById(hidden_input_id).value = null;
+    } else {
+        document.getElementById(hidden_input_id).value = dataid;
+    }
+    console.log(dataid);
+}
+
 // add descent
 if (!a) {
     var a = 2;

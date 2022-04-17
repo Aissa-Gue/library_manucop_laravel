@@ -11,7 +11,21 @@ $i = 0;
     @endif
 
     <fieldset class="scheduler-border">
-        <legend class="scheduler-border mb-3">معلومات الناسخ</legend>
+        <legend class="scheduler-border">معلومات الناسخ</legend>
+        <div class="row justify-content-end">
+            <div class="col-md-auto">
+                <form action="{{ Route('manuscripts.destroy', $manuscript->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <a class="btn text-primary fs-5" href="{{ Route('manuscripts.edit', $manuscript->id) }}"><i
+                            class="fas fa-edit"></i></a>
+                    <button class="btn text-danger fs-5" type="submit" onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
         @foreach ($manuscript->transcribers as $transcriber)
             <section class="manuscripts_show">
                 @if ($manuscript->transcribers->count() > 1)
@@ -198,7 +212,8 @@ $i = 0;
                         @else
                             @foreach ($fontMatchers as $fontMatcher)
                                 @if ($transcriber->id == $fontMatcher->transcriber_id)
-                                    <p>{{ $fontMatcher->transcriber2->full_name }}</p>
+                                    <p>{{ $fontMatcher->transcriber2->full_name }}{{ $fontMatcher->transcriber2->descent1 ? ' ' . $fontMatcher->transcriber2->descent1 : '' }}{{ $fontMatcher->transcriber2->descent2 ? ' ' . $fontMatcher->transcriber2->descent2 : '' }}{{ $fontMatcher->transcriber2->descent3 ? ' ' . $fontMatcher->transcriber2->descent3 : '' }}{{ $fontMatcher->transcriber2->descent4 ? ' ' . $fontMatcher->transcriber2->descent4 : '' }}{{ $fontMatcher->transcriber2->descent5 ? ' ' . $fontMatcher->transcriber2->descent5 : '' }}{{ $fontMatcher->transcriber2->last_name ? ' ' . $fontMatcher->transcriber2->last_name : '' }}{{ $fontMatcher->transcriber2->nickname ? ' (' . $fontMatcher->transcriber2->nickname . ')' : '' }}
+                                    </p>
                                 @endif
                             @endforeach
                         @endif

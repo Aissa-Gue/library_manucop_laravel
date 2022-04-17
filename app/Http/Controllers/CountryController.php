@@ -16,7 +16,8 @@ class CountryController extends Controller
     public function index(Request $request)
     {
         $countries = Country::Where('name', 'LIKE', '%' . $request->name . '%')
-            ->paginate(25);
+            ->paginate(80)
+            ->withQueryString();
 
         return view('countries.index')->with('countries', $countries);
     }
@@ -66,13 +67,11 @@ class CountryController extends Controller
 
         if ($validator->fails()) {
             return redirect()->back()->with('message', $messageFail);
-
-        }else{
+        } else {
             try {
                 Country::where('id', $id)
                     ->update(['name' => $request->name1]);
                 return redirect()->back()->with('message', $messageSuccess);
-
             } catch (\Exception $e) {
                 return redirect()->back()->with('message', $messageFail);
             }
@@ -94,7 +93,6 @@ class CountryController extends Controller
                 "bg" => "bg-success",
             ];
             return redirect()->back()->with('message', $message);
-
         } catch (\Exception $e) {
             if (Country::find($id)->manuscripts->count() > 0) {
                 $message = [

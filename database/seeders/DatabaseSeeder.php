@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             SubjectSeeder::class,
             MotifSeeder::class,
             ManutypeSeeder::class,
+            AuthorSeeder::class,
+            TranscriberSeeder::class,
         ]);
     }
 }

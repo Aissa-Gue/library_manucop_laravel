@@ -102,6 +102,7 @@ class CreateManuscript extends Component
     /*** Step 05 ***/
     public $transcribed_from;
     public $transcribed_to;
+    public $is_to_himself;
     public $rost_completion;
     public $notes;
 
@@ -359,8 +360,14 @@ class CreateManuscript extends Component
     public function render()
     {
         $this->dispatchBrowserEvent('reloadScripts');
+        $manuComp = [
+            'is_update' => false,
+            'btn_title' => 'إضافة',
+            'btn_color' => 'btn-success',
+            'btn_icon' => 'fas fa-plus',
+        ];
 
-        return view('livewire.manuscripts.create-manuscript')
+        return view('livewire.manuscripts.create-edit-manuscript')
             ->with('transcribers1', $this->transcribers1())
             ->with('fontMatchers1', $this->fontMatchers1())
             ->with('transcriber1_matchers', $this->transcriber1_matchers)
@@ -379,7 +386,8 @@ class CreateManuscript extends Component
             ->with('cabinets', $this->cabinets())
             ->with('motifs', $this->motifs())
             ->with('colors', $this->colors())
-            ->with('manutypes', $this->manutypes());
+            ->with('manutypes', $this->manutypes())
+            ->with('manuComp', $manuComp);
     }
 
 
@@ -410,14 +418,14 @@ class CreateManuscript extends Component
                 'transcriber1_id' => 'required|integer|exists:transcribers,id',
                 'name_in_manu1' => 'required|string',
                 'transcriber1_matchers' => 'nullable|array',
-                'transcriber1_matchers.*.id' => 'nullable|integer|exists:transcribers,id',
+                'transcriber1_matchers.*.id' => 'nullable|integer|different:transcriber1_id|exists:transcribers,id',
             ]);
             if ($this->nbrOfTranscribers >= 2) {
                 $this->validate([
                     'transcriber2_id' => 'required|integer|exists:transcribers,id',
                     'name_in_manu2' => 'required|string',
                     'transcriber2_matchers' => 'nullable|array',
-                    'transcriber2_matchers.*.id' => 'nullable|integer|exists:transcribers,id',
+                    'transcriber2_matchers.*.id' => 'nullable|integer|different:transcriber2_id|exists:transcribers,id',
                 ]);
             }
             if ($this->nbrOfTranscribers >= 3) {
@@ -425,7 +433,7 @@ class CreateManuscript extends Component
                     'transcriber3_id' => 'required|integer|exists:transcribers,id',
                     'name_in_manu3' => 'required|string',
                     'transcriber3_matchers' => 'nullable|array',
-                    'transcriber3_matchers.*.id' => 'nullable|integer|exists:transcribers,id',
+                    'transcriber3_matchers.*.id' => 'nullable|integer|different:transcriber3_id|exists:transcribers,id',
                 ]);
             }
             if ($this->nbrOfTranscribers >= 4) {
@@ -433,7 +441,7 @@ class CreateManuscript extends Component
                     'transcriber4_id' => 'required|integer|exists:transcribers,id',
                     'name_in_manu4' => 'required|string',
                     'transcriber4_matchers' => 'nullable|array',
-                    'transcriber4_matchers.*.id' => 'nullable|integer|exists:transcribers,id',
+                    'transcriber4_matchers.*.id' => 'nullable|integer|different:transcriber4_id|exists:transcribers,id',
                 ]);
             }
         } elseif ($this->currentStep == 2) {
@@ -459,22 +467,22 @@ class CreateManuscript extends Component
                 'city_id' => 'nullable|integer|exists:cities,id',
 
                 'signed_in' => 'required|boolean',
-                'cabinet_id' => 'nullable|integer|exists:cabinets,id',
-                'nbr_in_cabinet' => 'nullable|integer',
-                'manu_type' => 'nullable|string|in:مج,مص,دغ', //مجلد، مصحف، دون غلاف
+                'cabinet_id' => 'required|integer|exists:cabinets,id',
+                'nbr_in_cabinet' => 'required|integer',
+                'manu_type' => 'required|string|in:مج,مص,دغ', //مجلد، مصحف، دون غلاف
                 'nbr_in_index' => 'nullable|integer',
             ]);
         } elseif ($this->currentStep == 3) {
             return $this->validate([
                 'font' => 'nullable|string|max:255|in:مغربي,مشرقي',
-                'font_style' => 'nullable|string|max:255|in:الكوفي المغربي,الثلث المغربي,المدمج,المسند (الزمامي),المبسوط,المجوهر',
+                'font_style' => 'nullable|string|max:255|in:الكوفي المغربي,الثلث المغربي,المدمج,المسند (الزمامي),المبسوط,المجوهر,النسخ,الثلث,الكوفي,التعليق,الديواني,الرقعة',
                 'manuscript_level' => 'nullable|string|max:255|in:رديئة,متوسطة,حسنة,جيدة', //مستوى النسخة من حيث الجودة والضبط
 
                 'regular_lines' => 'nullable|boolean',
                 'lines_notes' => 'required_with:regular_lines|max:255',
 
                 'nbr_of_papers' => 'nullable|integer',
-                'paper_size' => 'nullable|integer|between:1,3',
+                'paper_size' => 'required|integer|between:1,3',
                 'size_notes' => 'required_with:paper_size|max:255',
 
                 'save_status' => 'nullable|string|max:255|in:حسنة,متوسطة,رديئة,من حسنة إلى متوسطة,من متوسطة إلى رديئة',
@@ -522,10 +530,15 @@ class CreateManuscript extends Component
                 'motifs'
             ]));
 
+            if ($this->is_to_himself == 1) {
+                Manuscript::where('id', $manuscript->id)->update([
+                    'transcribed_to' => 'لنفسه'
+                ]);
+            }
 
             // add colors
-            if (!empty($this->colors)) {
-                foreach ($this->colors as $color) {
+            if (!empty($this->colorsArray)) {
+                foreach ($this->colorsArray as $color) {
                     ManuscriptColor::create([
                         'manuscript_id' => $manuscript->id,
                         'color_id' => $color['id'],
@@ -534,8 +547,8 @@ class CreateManuscript extends Component
             }
 
             // add manutypes
-            if (!empty($this->manutypes)) {
-                foreach ($this->manutypes as $manutype) {
+            if (!empty($this->manutypesArray)) {
+                foreach ($this->manutypesArray as $manutype) {
                     ManuscriptManutype::create([
                         'manuscript_id' => $manuscript->id,
                         'manutype_id' => $manutype['id'],
@@ -544,8 +557,8 @@ class CreateManuscript extends Component
             }
 
             // add motifs
-            if (!empty($this->motifs)) {
-                foreach ($this->motifs as $motif) {
+            if (!empty($this->motifsArray)) {
+                foreach ($this->motifsArray as $motif) {
                     ManuscriptMotif::create([
                         'manuscript_id' => $manuscript->id,
                         'motif_id' => $motif['id'],

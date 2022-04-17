@@ -32,7 +32,8 @@ class ManuscriptController extends Controller
                 ->WhereHas('book', function (Builder $query) use ($request) {
                     $query->where('title', 'like', '%' . $request->title . '%');
                 })
-                ->paginate(25);
+                ->paginate(80)
+                ->withQueryString();
         }
         return view('manuscripts.index')->with('manuscripts', $manuscripts);
     }
@@ -53,8 +54,20 @@ class ManuscriptController extends Controller
                 //->orDoesntHave('book.authors');
             })
             ->whereHas('transcribers', function ($query) use ($request) {
-                $query->select(DB::raw("CONCAT(full_name, ' ', IFNULL(descent1,''),' ', IFNULL(descent2,''),' ', IFNULL(descent3,''),' ',IFNULL(descent4,''), ' ',IFNULL(descent5,''), ' ',IFNULL(other_name1,''),' ',IFNULL(other_name2,''),' ',IFNULL(other_name3,''),' ',IFNULL(other_name4,'')) as full_name_descent_other"))
-                    ->having('full_name_descent_other', 'LIKE', '%' . $request->transcriber . '%');
+                $query->select(DB::raw("CONCAT(full_name,
+                IFNULL(concat(' ',descent1),''),
+                IFNULL(concat(' ',descent2),''),
+                IFNULL(concat(' ',descent3),''),
+                IFNULL(concat(' ',descent4),''),
+                IFNULL(concat(' ',descent5),''),
+                IFNULL(concat(' ',last_name),''),
+                IFNULL(concat(' ',nickname),''),
+                IFNULL(concat(' ',other_name1),''),
+                IFNULL(concat(' ',other_name2),''),
+                IFNULL(concat(' ',other_name3),''),
+                IFNULL(concat(' ',other_name4),''))
+                as full_name_all"))
+                    ->having('full_name_all', 'LIKE', '%' . $request->transcriber . '%');
             })
             ->where(function ($query) use ($request) {
                 if ($request->country !== null)
@@ -116,8 +129,20 @@ class ManuscriptController extends Controller
                 //->orDoesntHave('book.subjects');
             })
             ->whereHas('transcribers', function ($query) use ($request) {
-                $query->select(DB::raw("CONCAT(full_name, ' ', IFNULL(descent1,''),' ', IFNULL(descent2,''),' ', IFNULL(descent3,''),' ',IFNULL(descent4,''), ' ',IFNULL(descent5,''), ' ',IFNULL(other_name1,''),' ',IFNULL(other_name2,''),' ',IFNULL(other_name3,''),' ',IFNULL(other_name4,'')) as full_name_descent_other"))
-                    ->having('full_name_descent_other', 'LIKE', '%' . $request->transcriber . '%');
+                $query->select(DB::raw("CONCAT(full_name,
+                IFNULL(concat(' ',descent1),''),
+                IFNULL(concat(' ',descent2),''),
+                IFNULL(concat(' ',descent3),''),
+                IFNULL(concat(' ',descent4),''),
+                IFNULL(concat(' ',descent5),''),
+                IFNULL(concat(' ',last_name),''),
+                IFNULL(concat(' ',nickname),''),
+                IFNULL(concat(' ',other_name1),''),
+                IFNULL(concat(' ',other_name2),''),
+                IFNULL(concat(' ',other_name3),''),
+                IFNULL(concat(' ',other_name4),''))
+                as full_name_all"))
+                    ->having('full_name_all', 'LIKE', '%' . $request->transcriber . '%');
             })
             ->where(function ($query) use ($request) {
                 if ($request->transCountry !== null)
@@ -287,94 +312,6 @@ class ManuscriptController extends Controller
     }
 
 
-    public function validateForm(Request $request)
-    {
-        $validated = $this->validate($request, [
-            //Transcriber names in manu
-            'transcriber1_id' => 'required|integer|different:transcriber2_id|different:transcriber3_id|different:transcriber4_id|exists:transcribers,id',
-            'transcriber2_id' => 'nullable|required_with:name_in_manu2|integer|different:transcriber1_id|different:transcriber3_id|different:transcriber4_id|exists:transcribers,id',
-            'transcriber3_id' => 'nullable|required_with:name_in_manu3|integer|different:transcriber1_id|different:transcriber2_id|different:transcriber4_id|exists:transcribers,id',
-            'transcriber4_id' => 'nullable|required_with:name_in_manu4|integer|different:transcriber1_id|different:transcriber2_id|different:transcriber3_id|exists:transcribers,id',
-            'name_in_manu1' => 'required|required_with:transcriber1_id|max:255',
-            'name_in_manu2' => 'nullable|required_with:transcriber2_id|max:255',
-            'name_in_manu3' => 'nullable|required_with:transcriber3_id|max:255',
-            'name_in_manu4' => 'nullable|required_with:transcriber4_id|max:255',
-
-            // transcriber matchers
-            'fontMatchers1' => 'nullable|array',
-            'fontMatchers1.*' => 'nullable|distinct|different:transcriber1_id|integer|exists:transcribers,id',
-            'fontMatchers2' => 'nullable|array',
-            'fontMatchers2.*' => 'nullable|distinct|different:transcriber2_id|integer|exists:transcribers,id',
-            'fontMatchers3' => 'nullable|array',
-            'fontMatchers3.*' => 'nullable|distinct|different:transcriber3_id|integer|exists:transcribers,id',
-            'fontMatchers4' => 'nullable|array',
-            'fontMatchers4.*' => 'nullable|distinct|different:transcriber4_id|integer|exists:transcribers,id',
-
-            //book
-            'book_id' => 'required|integer|exists:books,id',
-            'book_part' => 'nullable|integer',
-
-            //Day of transcription
-            'trans_day' => 'nullable|numeric|between:1,7',
-
-            //Hijri date
-            'trans_day_nbr' => 'nullable|integer|between:1,31',
-            'trans_month' => 'nullable|integer|between:1,12',
-            'trans_syear' => 'nullable|integer',
-            'trans_eyear' => 'nullable|integer',
-
-            //Miladi date
-            'trans_day_nbr_m' => 'nullable|integer|between:1,31',
-            'trans_month_m' => 'nullable|integer|between:1,12',
-            'trans_syear_m' => 'nullable|integer',
-            'trans_eyear_m' => 'nullable|integer',
-
-            'trans_place' => 'nullable|string|max:255',
-            'signed_in' => 'required|boolean',
-            'cabinet_id' => 'nullable|integer|exists:cabinets,id',
-            'nbr_in_cabinet' => 'nullable|integer',
-            'manu_type' => 'nullable|string|in:مج,مص,دغ', //مجلد، مصحف، دون غلاف
-            'nbr_in_index' => 'nullable|integer',
-
-            'font' => 'nullable|string|max:255|in:مغربي,مشرقي',
-            'font_style' => 'nullable|string|max:255|in:الكوفي المغربي,الثلث المغربي,المدمج,المسند (الزمامي),المبسوط,المجوهر',
-            'regular_lines' => 'nullable|boolean',
-            'lines_notes' => 'required_with:regular_lines|max:255',
-
-            'nbr_of_papers' => 'nullable|integer',
-            'paper_size' => 'nullable|integer|between:1,3',
-            'size_notes' => 'required_with:paper_size|max:255',
-
-            'save_status' => 'nullable|string|max:255|in:حسنة,متوسطة,رديئة,من حسنة إلى متوسطة,من متوسطة إلى رديئة',
-            'is_truncated' => 'nullable|boolean',
-            'truncation_notes' => 'required_with:is_truncated|max:255',
-
-            'transcribed_from' => 'nullable|string|max:255',
-            'transcribed_to' => 'nullable|string|max:255',
-
-            'manuscript_level' => 'nullable|string|max:255|in:رديئة,متوسطة,حسنة,جيدة', //مستوى النسخة من حيث الجودة والضبط
-            'transcriber_level' => 'nullable|string|max:255|in:رديئة,متوسطة,حسنة,جيدة', //مستوى النسخة من حيث الوضوح والرداءة
-
-            'rost_completion' => 'nullable|boolean',
-
-            'country_id' => 'nullable|integer|exists:countries,id',
-            'city_id' => 'nullable|integer|exists:cities,id',
-
-            'notes' => 'nullable|string|max:65535',
-
-            'color_ids' => 'required|array',
-            'color_ids.*' => 'required|integer|distinct|exists:colors,id',
-
-            'manutype_ids' => 'nullable|array',
-            'manutype_ids.*' => 'nullable|integer|distinct|exists:manutypes,id',
-
-            'motif_ids' => 'nullable|array',
-            'motif_ids.*' => 'nullable|integer|distinct|exists:motifs,id',
-        ]);
-        return $validated;
-    }
-
-
     /**
      * Display the specified resource.
      *
@@ -385,6 +322,7 @@ class ManuscriptController extends Controller
     {
         $fontMatchers = MatchingFont::where('manuscript_id', $id)->get();
         $manuscript = Manuscript::with('transcribers', 'book', 'country', 'city')->find($id);
+
         return view('manuscripts.show')
             ->with('manuscript', $manuscript)
             ->with('fontMatchers', $fontMatchers);

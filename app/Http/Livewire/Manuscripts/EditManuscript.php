@@ -102,6 +102,7 @@ class EditManuscript extends Component
     /*** Step 05 ***/
     public $transcribed_from;
     public $transcribed_to;
+    public $is_to_himself;
     public $rost_completion;
     public $notes;
 
@@ -118,13 +119,14 @@ class EditManuscript extends Component
         //step 01
         $i = 1;
         foreach ($this->manuscript->transcribers as $transcriber) {
-            $this->{'transcriber' . $i} = $transcriber->full_name;
+            $this->{'transcriber' . $i} = $transcriber->full_name . ($transcriber->descent1 ? ' ' . $transcriber->descent1 : '') . ($transcriber->descent2 ? ' ' . $transcriber->descent2 : '') . ($transcriber->descent3 ? ' ' . $transcriber->descent3 : '') . ($transcriber->descent4 ? ' ' . $transcriber->descent4 : '') . ($transcriber->descent5 ? ' ' . $transcriber->descent5 : '') . ($transcriber->last_name ? ' ' . $transcriber->last_name : '') . ($transcriber->nickname ? ' ' . $transcriber->nickname : '');
             $this->{'transcriber' . $i . '_id'} = $transcriber->id;
             $this->{'name_in_manu' . $i} = $transcriber->pivot->name_in_manu;
             if ($this->transcriberMatchers) {
                 foreach ($this->transcriberMatchers as $transcriberMatcher) {
                     if ($transcriber->id == $transcriberMatcher->transcriber_id) {
-                        $this->pushToTranscriberMatchers($i, $transcriberMatcher->transcriber_id2, $transcriberMatcher->transcriber2->full_name);
+                        $transcriberMatcherDetails = $transcriberMatcher->transcriber2->full_name . ($transcriberMatcher->transcriber2->descent1 ? ' ' . $transcriberMatcher->transcriber2->descent1 : '') . ($transcriberMatcher->transcriber2->descent2 ? ' ' . $transcriberMatcher->transcriber2->descent2 : '') . ($transcriberMatcher->transcriber2->descent3 ? ' ' . $transcriberMatcher->transcriber2->descent3 : '') . ($transcriberMatcher->transcriber2->descent4 ? ' ' . $transcriberMatcher->transcriber2->descent4 : '') . ($transcriberMatcher->transcriber2->descent5 ? ' ' . $transcriberMatcher->transcriber2->descent5 : '') . ($transcriberMatcher->transcriber2->last_name ? ' ' . $transcriberMatcher->transcriber2->last_name : '') . ($transcriberMatcher->transcriber2->nickname ? ' ' . $transcriberMatcher->transcriber2->nickname : '');
+                        $this->pushToTranscriberMatchers($i, $transcriberMatcher->transcriber_id2, $transcriberMatcherDetails);
                     }
                 }
             }
@@ -145,12 +147,12 @@ class EditManuscript extends Component
         $this->trans_eyear = $this->manuscript->trans_eyear;
         $this->trans_eyear_m = $this->manuscript->trans_eyear_m;
         $this->trans_place = $this->manuscript->trans_place;
-        $this->city = $this->manuscript->city->name;
+        $this->city = $this->manuscript->city->name ?? '';
         $this->city_id = $this->manuscript->city_id;
-        $this->country = $this->manuscript->country->name;
+        $this->country = $this->manuscript->country->name ?? '';
         $this->country_id = $this->manuscript->country_id;
         $this->signed_in = $this->manuscript->signed_in;
-        $this->cabinet = $this->manuscript->cabinet->name;
+        $this->cabinet = $this->manuscript->cabinet->name ?? '';
         $this->cabinet_id = $this->manuscript->cabinet_id;
         $this->nbr_in_index = $this->manuscript->nbr_in_index;
         $this->nbr_in_cabinet = $this->manuscript->nbr_in_cabinet;
@@ -189,6 +191,7 @@ class EditManuscript extends Component
         //step 05
         $this->transcribed_from = $this->manuscript->transcribed_from;
         $this->transcribed_to = $this->manuscript->transcribed_to;
+        $this->manuscript->transcribed_to == 'لنفسه' ? $this->is_to_himself = 1 : $this->is_to_himself = 0;
         $this->rost_completion = $this->manuscript->rost_completion;
         $this->notes = $this->manuscript->notes;
     }
@@ -436,8 +439,14 @@ class EditManuscript extends Component
     public function render()
     {
         $this->dispatchBrowserEvent('reloadScripts');
+        $manuComp = [
+            'is_update' => true,
+            'btn_title' => 'تعديل',
+            'btn_color' => 'btn-primary',
+            'btn_icon' => 'fas fa-pencil-alt',
+        ];
 
-        return view('livewire.manuscripts.edit-manuscript')
+        return view('livewire.manuscripts.create-edit-manuscript')
             ->with('transcribers1', $this->transcribers1())
             ->with('fontMatchers1', $this->fontMatchers1())
             ->with('transcriber1_matchers', $this->transcriber1_matchers)
@@ -456,7 +465,8 @@ class EditManuscript extends Component
             ->with('cabinets', $this->cabinets())
             ->with('motifs', $this->motifs())
             ->with('colors', $this->colors())
-            ->with('manutypes', $this->manutypes());
+            ->with('manutypes', $this->manutypes())
+            ->with('manuComp', $manuComp);
     }
 
 
@@ -487,31 +497,31 @@ class EditManuscript extends Component
             $this->validate([
                 'transcriber1_id' => 'required|integer|exists:transcribers,id',
                 'name_in_manu1' => 'required|string',
-                'transcriber1_matchers' => 'required|array',
-                'transcriber1_matchers.*.id' => 'required|integer|exists:transcribers,id',
+                'transcriber1_matchers' => 'nullable|array',
+                'transcriber1_matchers.*.id' => 'nullable|integer|different:transcriber1_id|exists:transcribers,id',
             ]);
             if ($this->nbrOfTranscribers >= 2) {
                 $this->validate([
                     'transcriber2_id' => 'required|integer|exists:transcribers,id',
                     'name_in_manu2' => 'required|string',
-                    'transcriber2_matchers' => 'required|array',
-                    'transcriber2_matchers.*.id' => 'required|integer|exists:transcribers,id',
+                    'transcriber2_matchers' => 'nullable|array',
+                    'transcriber2_matchers.*.id' => 'nullable|integer|different:transcriber2_id|exists:transcribers,id',
                 ]);
             }
             if ($this->nbrOfTranscribers >= 3) {
                 $this->validate([
                     'transcriber3_id' => 'required|integer|exists:transcribers,id',
                     'name_in_manu3' => 'required|string',
-                    'transcriber3_matchers' => 'required|array',
-                    'transcriber3_matchers.*.id' => 'required|integer|exists:transcribers,id',
+                    'transcriber3_matchers' => 'nullable|array',
+                    'transcriber3_matchers.*.id' => 'nullable|integer|different:transcriber3_id|exists:transcribers,id',
                 ]);
             }
             if ($this->nbrOfTranscribers >= 4) {
                 $this->validate([
                     'transcriber4_id' => 'required|integer|exists:transcribers,id',
                     'name_in_manu4' => 'required|string',
-                    'transcriber4_matchers' => 'required|array',
-                    'transcriber4_matchers.*.id' => 'required|integer|exists:transcribers,id',
+                    'transcriber4_matchers' => 'nullable|array',
+                    'transcriber4_matchers.*.id' => 'nullable|integer|different:transcriber4_id|exists:transcribers,id',
                 ]);
             }
         } elseif ($this->currentStep == 2) {
@@ -537,22 +547,22 @@ class EditManuscript extends Component
                 'city_id' => 'nullable|integer|exists:cities,id',
 
                 'signed_in' => 'required|boolean',
-                'cabinet_id' => 'nullable|integer|exists:cabinets,id',
-                'nbr_in_cabinet' => 'nullable|integer',
-                'manu_type' => 'nullable|string|in:مج,مص,دغ', //مجلد، مصحف، دون غلاف
+                'cabinet_id' => 'required|integer|exists:cabinets,id',
+                'nbr_in_cabinet' => 'required|integer',
+                'manu_type' => 'required|string|in:مج,مص,دغ', //مجلد، مصحف، دون غلاف
                 'nbr_in_index' => 'nullable|integer',
             ]);
         } elseif ($this->currentStep == 3) {
             return $this->validate([
                 'font' => 'nullable|string|max:255|in:مغربي,مشرقي',
-                'font_style' => 'nullable|string|max:255|in:الكوفي المغربي,الثلث المغربي,المدمج,المسند (الزمامي),المبسوط,المجوهر',
+                'font_style' => 'nullable|string|max:255|in:الكوفي المغربي,الثلث المغربي,المدمج,المسند (الزمامي),المبسوط,المجوهر,النسخ,الثلث,الكوفي,التعليق,الديواني,الرقعة',
                 'manuscript_level' => 'nullable|string|max:255|in:رديئة,متوسطة,حسنة,جيدة', //مستوى النسخة من حيث الجودة والضبط
 
                 'regular_lines' => 'nullable|boolean',
                 'lines_notes' => 'required_with:regular_lines|max:255',
 
                 'nbr_of_papers' => 'nullable|integer',
-                'paper_size' => 'nullable|integer|between:1,3',
+                'paper_size' => 'required|integer|between:1,3',
                 'size_notes' => 'required_with:paper_size|max:255',
 
                 'save_status' => 'nullable|string|max:255|in:حسنة,متوسطة,رديئة,من حسنة إلى متوسطة,من متوسطة إلى رديئة',
@@ -589,22 +599,29 @@ class EditManuscript extends Component
 
         DB::beginTransaction();
         try {
+
             $manuscript = Manuscript::where('id', $this->manuscript->id)
-                ->update($this->except([
-                    'transcriber1_id', 'transcriber2_id',
-                    'transcriber3_id', 'transcriber4_id',
-                    'name_in_manu1', 'name_in_manu2',
-                    'name_in_manu3', 'name_in_manu4',
-                    'transcriber1_matchers', 'transcriber2_matchers', 'transcriber3_matchers', 'transcriber4_matchers',
-                    'colors',
-                    'manutypes',
-                    'motifs'
+                ->update($this->only([
+                    'book_id', 'book_part',
+                    'trans_day', 'trans_day_nbr', 'trans_month', 'trans_syear', 'trans_eyear',
+                    'trans_day_nbr_m', 'trans_month_m', 'trans_syear_m', 'trans_eyear_m',
+                    'trans_place', 'signed_in', 'cabinet_id', 'nbr_in_cabinet', 'manu_type', 'nbr_in_index',
+                    'font', 'font_style', 'regular_lines', 'lines_notes', 'nbr_of_papers', 'paper_size', 'size_notes',
+                    'save_status', 'is_truncated', 'truncation_notes', 'transcribed_from', 'transcribed_to',
+                    'manuscript_level', 'transcriber_level', 'rost_completion', 'country_id', 'city_id',
+                    'notes'
                 ]));
+
+            if ($this->is_to_himself == 1) {
+                Manuscript::where('id', $this->manuscript->id)->update([
+                    'transcribed_to' => 'لنفسه'
+                ]);
+            }
 
             // update colors
             ManuscriptColor::where('manuscript_id', $this->manuscript->id)->delete();
-            if (!empty($this->colors)) {
-                foreach ($this->colors as $color) {
+            if (!empty($this->colorsArray)) {
+                foreach ($this->colorsArray as $color) {
                     ManuscriptColor::create([
                         'manuscript_id' => $this->manuscript->id,
                         'color_id' => $color['id'],
@@ -614,19 +631,18 @@ class EditManuscript extends Component
 
             // update manutypes
             ManuscriptManutype::where('manuscript_id', $this->manuscript->id)->delete();
-            if (!empty($this->manutypes)) {
-                foreach ($this->manutypes as $manutype) {
+            if (!empty($this->manutypesArray)) {
+                foreach ($this->manutypesArray as $manutype) {
                     ManuscriptManutype::create([
                         'manuscript_id' => $this->manuscript->id,
                         'manutype_id' => $manutype['id'],
                     ]);
                 }
             }
-
             // update motifs
             ManuscriptMotif::where('manuscript_id', $this->manuscript->id)->delete();
-            if (!empty($this->motifs)) {
-                foreach ($this->motifs as $motif) {
+            if (!empty($this->motifsArray)) {
+                foreach ($this->motifsArray as $motif) {
                     ManuscriptMotif::create([
                         'manuscript_id' => $this->manuscript->id,
                         'motif_id' => $motif['id'],
@@ -682,6 +698,7 @@ class EditManuscript extends Component
             return redirect()->route('manuscripts.show', $this->manuscript->id)
                 ->with('message', $message);
         } catch (\Exception $e) {
+            //dd($e);
             DB::rollBack();
             $message = [
                 "label" => "حدثت مشكلة، لم يتم تعديل الاستمارة",

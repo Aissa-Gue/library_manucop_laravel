@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Manuscript;
+use App\Models\MatchingFont;
 use App\Models\Transcriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,10 +20,12 @@ class TranscriberController extends Controller
         if ($request->id && !$request->full_name) {
             $transcribers = Transcriber::with('country', 'city')
                 ->where('id', $request->id)
-                ->paginate(25);
+                ->paginate(80)
+                ->withQueryString();
         } else {
             $transcribers = Transcriber::Where('full_name', 'LIKE', '%' . $request->full_name . '%')
-                ->paginate(25);
+                ->paginate(80)
+                ->withQueryString();
         }
 
         return view('transcribers.index')->with('transcribers', $transcribers);
@@ -32,8 +35,20 @@ class TranscriberController extends Controller
     {
         $transcribers = Transcriber::with('manuscripts', 'country', 'city')
             ->where(function ($query) use ($request) {
-                $query->select(DB::raw("CONCAT(full_name, ' ', IFNULL(descent1,''),' ', IFNULL(descent2,''),' ', IFNULL(descent3,''),' ',IFNULL(descent4,''), ' ',IFNULL(descent5,''), ' ',IFNULL(other_name1,''),' ',IFNULL(other_name2,''),' ',IFNULL(other_name3,''),' ',IFNULL(other_name4,'')) as full_name_descent_other"))
-                    ->having('full_name_descent_other', 'LIKE', '%' . $request->transcriber . '%');
+                $query->select(DB::raw("CONCAT(full_name,
+                IFNULL(concat(' ',descent1),''),
+                IFNULL(concat(' ',descent2),''),
+                IFNULL(concat(' ',descent3),''),
+                IFNULL(concat(' ',descent4),''),
+                IFNULL(concat(' ',descent5),''),
+                IFNULL(concat(' ',last_name),''),
+                IFNULL(concat(' ',nickname),''),
+                IFNULL(concat(' ',other_name1),''),
+                IFNULL(concat(' ',other_name2),''),
+                IFNULL(concat(' ',other_name3),''),
+                IFNULL(concat(' ',other_name4),''))
+                as full_name_all"))
+                    ->having('full_name_all', 'LIKE', '%' . $request->transcriber . '%');
             })
             ->where(function ($query) use ($request) {
                 if ($request->last_name !== null)
@@ -160,23 +175,46 @@ class TranscriberController extends Controller
         $transcriber = Transcriber::with('country', 'city')->find($id);
 
         //min trans_syear
-        $minManu_syear = Manuscript::whereNotNull('trans_syear')
+        $minManu_syear = Transcriber::join('manuscript_transcribers', 'manuscript_transcribers.transcriber_id', 'transcribers.id')
+            ->join('manuscripts', 'manuscripts.id', 'manuscript_transcribers.manuscript_id')
+            ->where('transcriber_id', $id)
+            ->whereNotNull('trans_syear')
             ->min('trans_syear');
-        $minManu_syear_m = Manuscript::whereNotNull('trans_syear_m')
+
+        $minManu_syear = Transcriber::join('manuscript_transcribers', 'manuscript_transcribers.transcriber_id', 'transcribers.id')
+            ->join('manuscripts', 'manuscripts.id', 'manuscript_transcribers.manuscript_id')
+            ->where('transcriber_id', $id)
+            ->whereNotNull('trans_syear')
+            ->min('trans_syear');
+
+        $minManu_syear_m = Transcriber::join('manuscript_transcribers', 'manuscript_transcribers.transcriber_id', 'transcribers.id')
+            ->join('manuscripts', 'manuscripts.id', 'manuscript_transcribers.manuscript_id')
+            ->where('transcriber_id', $id)
+            ->whereNotNull('trans_syear_m')
             ->min('trans_syear_m');
 
-        // min trans_eyear
-        $minManu_eyear = Manuscript::whereNotNull('trans_eyear')
-            ->min('trans_eyear');
-        $minManu_eyear_m = Manuscript::whereNotNull('trans_eyear_m')
-            ->min('trans_eyear_m');
+        // max trans_eyear
+        $maxManu_eyear = Transcriber::join('manuscript_transcribers', 'manuscript_transcribers.transcriber_id', 'transcribers.id')
+            ->join('manuscripts', 'manuscripts.id', 'manuscript_transcribers.manuscript_id')
+            ->where('transcriber_id', $id)
+            ->whereNotNull('trans_eyear')
+            ->max('trans_eyear');
+
+        $maxManu_eyear_m = Transcriber::join('manuscript_transcribers', 'manuscript_transcribers.transcriber_id', 'transcribers.id')
+            ->join('manuscripts', 'manuscripts.id', 'manuscript_transcribers.manuscript_id')
+            ->where('transcriber_id', $id)
+            ->whereNotNull('trans_eyear_m')
+            ->max('trans_eyear_m');
+
+        $fontMatchers = MatchingFont::where('transcriber_id', $id)->get();
 
         return view('transcribers.show')
             ->with('transcriber', $transcriber)
+            ->with('fontMatchers', $fontMatchers)
             ->with('minManu_syear', $minManu_syear)
             ->with('minManu_syear_m', $minManu_syear_m)
-            ->with('minManu_eyear', $minManu_eyear)
-            ->with('minManu_eyear_m', $minManu_eyear_m);
+            ->with('maxManu_eyear', $maxManu_eyear)
+            ->with('maxManu_eyear_m', $maxManu_eyear_m);
     }
 
     /**

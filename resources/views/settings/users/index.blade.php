@@ -65,14 +65,13 @@ $subNavs = [
                             @include('settings.users.edit', $user)
 
                             <td class="text-center">
-                                <a class="btn btn-outline-danger" href="#"
-                                    onclick="confirm('هل أنت متأكد؟');event.preventDefault();document.getElementById('delete').submit();">
-                                    <i class="fas fa-trash-alt"></i>
-                                </a>
-                                <form id="delete" action="{{ Route('users.destroy', $user->id) }}" method="POST"
-                                    class="d-none">
+                                <form action="{{ Route('users.destroy', $user->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
+                                    <button class="btn btn-outline-danger" type="submit"
+                                        onclick="return confirm('هل أنت متأكد من الحذف؟')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>

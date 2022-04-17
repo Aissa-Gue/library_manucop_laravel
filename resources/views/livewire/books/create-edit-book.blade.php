@@ -1,6 +1,6 @@
 <div>
 
-    <form wire:submit.prevent="store()" method="post">
+    <form wire:submit.prevent="@if ($bookComp['is_update'] == true) update() @else store() @endif" method="post">
         @csrf
         <fieldset class="scheduler-border">
             <legend class="scheduler-border">معلومات الكتاب</legend>
@@ -107,8 +107,11 @@
 
             <div class="row justify-content-end text-end">
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> إضافة </button>
+                    <button type="submit" class="btn {{ $bookComp['btn_color'] }}"><i
+                            class="{{ $bookComp['btn_icon'] }}"></i>
+                        {{ $bookComp['btn_title'] }} </button>
                 </div>
             </div>
         </fieldset>
     </form>
+</div>

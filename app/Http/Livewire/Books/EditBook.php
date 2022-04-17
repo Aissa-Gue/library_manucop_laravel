@@ -89,9 +89,17 @@ class EditBook extends Component
 
     public function render()
     {
-        return view('livewire.books.edit-book')
+        $bookComp = [
+            'is_update' => true,
+            'btn_title' => 'تعديل',
+            'btn_color' => 'btn-primary',
+            'btn_icon' => 'fas fa-pencil-alt',
+        ];
+
+        return view('livewire.books.create-edit-book')
             ->with('subjects', $this->subjects())
-            ->with('authors', $this->authors());
+            ->with('authors', $this->authors())
+            ->with('bookComp', $bookComp);
     }
 
     public function update()

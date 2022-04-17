@@ -19,10 +19,12 @@ class BookController extends Controller
     {
         if ($request->id && !$request->title) {
             $books = Book::where('id', $request->id)
-                ->paginate(25);
+                ->paginate(80)
+                ->withQueryString();
         } else {
             $books = Book::Where('title', 'LIKE', '%' . $request->title . '%')
-                ->paginate(25);
+                ->paginate(80)
+                ->withQueryString();
         }
         return view('books.index')->with('books', $books);
     }

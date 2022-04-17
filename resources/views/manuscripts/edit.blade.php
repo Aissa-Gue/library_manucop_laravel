@@ -11,7 +11,7 @@ $page = ['title' => 'تعديل استمارة'];
     @endif
 
     <link href="{{ asset('/css/progressBar.css') }}" rel="stylesheet">
-
+    {{-- manuscript livewire controller --}}
     <livewire:manuscripts.edit-manuscript :manuscript="$manuscript" :transcriberMatchers="$transcriberMatchers" />
 
     <script src="{{ URL::asset('js/manuscripts.js') }}"></script>

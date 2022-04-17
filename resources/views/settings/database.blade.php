@@ -60,9 +60,14 @@ $subNavs = [
                 <label class="col-md-3">حذف قاعدة البيانات</label>
                 <div class="col-sm-4">
                     <div class="input-group">
-                        <a href="{{ Route('dropDB') }}" class="btn btn-danger"
-                            onclick="return confirm('احذر ! سيتم حذف جميع البيانات نهائيا !')"><i
-                                class="fas fa-trash-alt"></i> حـــــذف </a>
+                        <form action="{{ Route('dropDB') }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger" type="submit"
+                                onclick="return confirm('احذر ! سيتم حذف جميع البيانات نهائيا !')">
+                                <i class="fas fa-trash-alt"></i> حـــــذف
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

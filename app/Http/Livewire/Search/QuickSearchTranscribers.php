@@ -27,9 +27,17 @@ class QuickSearchTranscribers extends Component
         $other_name3 = Transcriber::select('other_name3');
         $other_name4 = Transcriber::select('other_name4');
 
-        return Transcriber::select(DB::raw("CONCAT(full_name, ' ', IFNULL(descent1,''),' ', IFNULL(descent2,''),' ', IFNULL(descent3,''),' ',IFNULL(descent4,''), ' ',IFNULL(descent5,'')) as full_name_descent"))
+        return Transcriber::select(DB::raw("CONCAT(full_name,
+        IFNULL(concat(' ',descent1),''),
+        IFNULL(concat(' ',descent2),''),
+        IFNULL(concat(' ',descent3),''),
+        IFNULL(concat(' ',descent4),''),
+        IFNULL(concat(' ',descent5),''),
+        IFNULL(concat(' ',last_name),''),
+        IFNULL(concat(' ',nickname),''))
+        as full_name_all"))
             ->unionAll($other_name1)->unionAll($other_name2)->unionAll($other_name3)->unionAll($other_name4)
-            ->having('full_name_descent', 'LIKE', '%' . $this->transcriber . '%')
+            ->having('full_name_all', 'LIKE', '%' . $this->transcriber . '%')
             ->paginate(40);
     }
 

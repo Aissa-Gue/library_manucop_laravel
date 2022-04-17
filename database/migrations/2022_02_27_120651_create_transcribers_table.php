@@ -15,7 +15,7 @@ class CreateTranscribersTable extends Migration
     {
         Schema::create('transcribers', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name');
+            $table->string('full_name')->unique();
             $table->string('descent1')->nullable();
             $table->string('descent2')->nullable();
             $table->string('descent3')->nullable();

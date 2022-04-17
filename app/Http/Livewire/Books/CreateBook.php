@@ -74,9 +74,16 @@ class CreateBook extends Component
 
     public function render()
     {
-        return view('livewire.books.create-book')
+        $bookComp = [
+            'is_update' => false,
+            'btn_title' => 'إضافة',
+            'btn_color' => 'btn-success',
+            'btn_icon' => 'fas fa-plus',
+        ];
+        return view('livewire.books.create-edit-book')
             ->with('subjects', $this->subjects())
-            ->with('authors', $this->authors());
+            ->with('authors', $this->authors())
+            ->with('bookComp', $bookComp);
     }
 
     public function store()

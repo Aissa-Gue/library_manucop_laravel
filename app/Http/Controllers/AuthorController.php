@@ -16,10 +16,12 @@ class AuthorController extends Controller
     {
         if ($request->id && !$request->name) {
             $authors = Author::where('id', $request->id)
-                ->paginate(25);
+                ->paginate(80)
+                ->withQueryString();
         } else {
             $authors = Author::Where('name', 'LIKE', '%' . $request->name . '%')
-                ->paginate(25);
+                ->paginate(80)
+                ->withQueryString();
         }
 
         return view('authors.index')->with('authors', $authors);
@@ -116,7 +118,6 @@ class AuthorController extends Controller
                 "bg" => "bg-success",
             ];
             return redirect()->back()->with('message', $message);
-
         } catch (\Exception $e) {
             if (Author::find($id)->books->count() > 0) {
                 $message = [
