@@ -22,10 +22,24 @@
                     <strong class="text-danger">اسم المستخدم: </strong>
                     {{ $user->username }}
                 </p>
-                <form id="editUserForm" action="{{ Route('users.update', $user->id) }}" method="post">
+                <form id="editUserForm{{ $user->id }}" action="{{ Route('users.update', $user->id) }}"
+                    method="post">
                     @csrf
                     @method('PUT')
                     <div class="row">
+                        <div class="col-md-12">
+                            <label for="name" class="form-label">الاسم الكامل</label>
+                            <input name="name" class="form-control @error('name', 'update') is-invalid @enderror"
+                                id="name" placeholder="أدخل الاسم الكامل" value="{{ $user->name }}">
+                            @error('name', 'update')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
                         <div class="col-md-6">
                             <label for="username" class="form-label">اسم المستخدم الجديد</label>
                             <input type="hidden" name="id" value="{{ $user->id }}">
@@ -101,7 +115,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                <button type="button" onclick="document.getElementById('editUserForm').submit();"
+                <button type="button" onclick="document.getElementById('editUserForm{{ $user->id }}').submit();"
                     class="btn btn-primary">تعديل
                 </button>
             </div>

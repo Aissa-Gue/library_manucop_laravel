@@ -55,7 +55,7 @@ $subNavs = [
                             <th scope="row">{{ $i }}</th>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->username }}</td>
-                            <td>{{ $user->is_admin == true ? 'مسؤول' : 'مستخدم' }}</td>
+                            <td>{{ $user->is_admin == 1 ? 'مسؤول' : 'مستخدم' }}</td>
                             <td class="text-center">
                                 <a class="btn btn-outline-primary" data-bs-toggle="modal"
                                     data-bs-target="#editUser{{ $user->id }}">

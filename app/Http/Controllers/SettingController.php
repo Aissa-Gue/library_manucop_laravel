@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SettingController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -24,8 +24,9 @@ class SettingController extends Controller
         $username = env('DB_USERNAME');
         $dbname = env('DB_DATABASE');
         $dbport = env('DB_PORT');
-        $ignoreUsers = '--ignore-table=' . $dbname . '.users';
-        $ignoreMigrations = '--ignore-table=' . $dbname . '.migrations';
+        //$ignoreUsers = '--ignore-table=' . $dbname . '.users';
+        //$ignoreMigrations = '--ignore-table=' . $dbname . '.migrations';
+        $ignoreUsers = $ignoreMigrations = '';
 
         $d = date('Y-m-d');
         $t = time();

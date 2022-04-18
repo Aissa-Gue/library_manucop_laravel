@@ -17,6 +17,19 @@
                 <form id="createUserForm" action="{{ Route('users.store') }}" method="post">
                     @csrf
                     <div class="row">
+                        <div class="col-md-12">
+                            <label for="name" class="form-label">الاسم الكامل</label>
+                            <input name="name" class="form-control @error('name', 'store') is-invalid @enderror"
+                                id="name" placeholder="أدخل الاسم الكامل">
+                            @error('name', 'store')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
                         <div class="col-md-6">
                             <label for="username" class="form-label">اسم المستخدم</label>
                             <input name="username" class="form-control @error('username', 'store') is-invalid @enderror"

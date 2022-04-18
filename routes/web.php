@@ -59,18 +59,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::view('/search/quick/books', 'search.quick')->name('search.quick.books');
     Route::get('/search/quick/books/results', [BookController::class, 'quickSearch'])->name('search.quick.bookSearch');
 
-    /** users */
-    Route::get('/settings/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/settings/users', [UserController::class, 'store'])->name('users.store');
-    Route::put('/settings/users/{id}', [UserController::class, 'update'])->name('users.update');
-    Route::delete('/settings/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-
-    /** database */
-    Route::get('/settings/database', [SettingController::class, 'index'])->name('settings.index');
-    Route::get('/settings/exportDB', [SettingController::class, 'exportDB'])->name('exportDB');
-    Route::post('/settings/importDB', [SettingController::class, 'importDB'])->name('importDB');
-    Route::delete('/settings/dropDB', [SettingController::class, 'dropDB'])->name('dropDB');
-
     /** countries */
     Route::resource('countries', CountryController::class)->except('show');
 
@@ -96,4 +84,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/manuscripts/{id}/edit', [ManuscriptController::class, 'edit'])->name('manuscripts.edit');
     Route::get('/manuscripts/{id}', [ManuscriptController::class, 'show'])->name('manuscripts.show');
     Route::delete('/manuscripts/{id}', [ManuscriptController::class, 'destroy'])->name('manuscripts.destroy');
+});
+
+Route::group(['middleware' => ['auth', 'admin']], function () {
+    /** users */
+    Route::get('/settings/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/settings/users', [UserController::class, 'store'])->name('users.store');
+    Route::put('/settings/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/settings/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    /** database */
+    Route::get('/settings/database', [SettingController::class, 'index'])->name('settings.index');
+    Route::get('/settings/exportDB', [SettingController::class, 'exportDB'])->name('exportDB');
+    Route::post('/settings/importDB', [SettingController::class, 'importDB'])->name('importDB');
+    Route::delete('/settings/dropDB', [SettingController::class, 'dropDB'])->name('dropDB');
 });
