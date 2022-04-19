@@ -1,4 +1,10 @@
-
+@media (min-width: 992px) {
+    .my_fixed_content{
+        position: relative;
+        margin-right: 200px;
+        width: calc(100% - 200px);
+    }
+}
 /****** START SIDEBAR ******/
 .my_fixed_sidebar {
     position: fixed;
@@ -7,13 +13,27 @@
     font-size: 15.3px;
     font-weight: bold;
     width: 200px;
+    overflow: auto;
+    max-height: 100vh;
     /* background-color: #fff; */
+}
+
+.offcanvas {
+    width : 230px !important;
+    overflow: auto !important;
+    max-height: 100vh !important;
+}
+.offcanvas-body{
+    padding: 1px !important;
+}
+.offcanvas-body .my_fixed_sidebar{
+    width : 220px !important;
 }
 
 .my_navList {
     position: relative;
     display: block;
-    padding: 0.20rem 1.25rem;
+    padding: 0.20rem 1rem;
     background-color: var(--my_lightColor) /* #ecfaee #d1ecf1 */;
     border-bottom: 1px solid rgba(0, 0, 0, 0.125);
     font-weight: bold;

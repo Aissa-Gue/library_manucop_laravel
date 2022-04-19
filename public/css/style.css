@@ -40,11 +40,13 @@ html {
     border-radius: 20px;
 }
 .my_line span {
+    font-family: 'Droid Arabic Naskh', serif;
     background: #487892;
     color: white;
     padding: 0 15px;
     border-radius: 10px;
     font-size: 0.9em;
+
 }
 /*** end divider ****/
 .bg-white-trans {
@@ -103,13 +105,13 @@ legend.scheduler-border {
 }
 
 .manuscripts_show h5 {
-    font-family: 'Amiri', serif;
+    font-family: 'Scheherazade New', serif;
     font-size: 15pt;
     font-weight: bold;
     color: #335191 !important;
 }
 
 .manuscripts_show p {
-    font-family: 'Scheherazade New', serif;
-    font-size: 16pt
+    font-family: 'Droid Arabic Naskh', serif;
+    font-size: 14pt
 }

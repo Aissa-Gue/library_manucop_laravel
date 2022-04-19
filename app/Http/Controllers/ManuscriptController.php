@@ -116,17 +116,21 @@ class ManuscriptController extends Controller
             })
             ->where(function ($query) use ($request) {
                 if ($request->authors !== null)
-                    $query->whereHas('book.authors', function ($query) use ($request) {
-                        $query->whereIn('name', $request->authors);
-                    });
-                //->orDoesntHave('book.authors');
+                    foreach ($request->authors as $author) {
+                        $query->whereHas('book.authors', function ($query) use ($author) {
+                            $query->where('name', $author);
+                        });
+                        //->OrDoesntHave('book.authors');
+                    }
             })
             ->where(function ($query) use ($request) {
                 if ($request->subjects !== null)
-                    $query->whereHas('book.subjects', function ($query) use ($request) {
-                        $query->whereIn('name', $request->subjects);
-                    });
-                //->orDoesntHave('book.subjects');
+                    foreach ($request->subjects as $subject) {
+                        $query->whereHas('book.subjects', function ($query) use ($subject) {
+                            $query->where('name', $subject);
+                        });
+                        //->OrDoesntHave('book.subjects');
+                    }
             })
             ->whereHas('transcribers', function ($query) use ($request) {
                 $query->select(DB::raw("CONCAT(full_name,
@@ -275,25 +279,32 @@ class ManuscriptController extends Controller
             })
             ->where(function ($query) use ($request) {
                 if ($request->manutypes !== null)
-                    $query->whereHas('manutypes', function ($query) use ($request) {
-                        $query->whereIn('name', $request->manutypes);
-                    });
-                //->OrDoesntHave('manutypes');
+                    foreach ($request->manutypes as $manutype) {
+                        $query->whereHas('manutypes', function ($query) use ($manutype) {
+                            $query->where('name', $manutype);
+                        });
+                        //->OrDoesntHave('manutypes');
+                    }
             })
             ->where(function ($query) use ($request) {
                 if ($request->colors !== null)
-                    $query->whereHas('colors', function ($query) use ($request) {
-                        $query->whereIn('name', $request->colors);
-                    });
-                //->orDoesntHave('colors');
+                    foreach ($request->colors as $color) {
+                        $query->whereHas('colors', function ($query) use ($color) {
+                            $query->where('name', $color);
+                        });
+                        //->OrDoesntHave('colors');
+                    }
             })
             ->where(function ($query) use ($request) {
                 if ($request->motifs !== null)
-                    $query->whereHas('motifs', function ($query) use ($request) {
-                        $query->whereIn('name', $request->motifs);
-                    });
-                //->orDoesntHave('motifs');
+                    foreach ($request->motifs as $motif) {
+                        $query->whereHas('motifs', function ($query) use ($motif) {
+                            $query->where('name', $motif);
+                        });
+                        //->orDoesntHave('motifs');
+                    }
             })
+
             ->paginate(35)
             ->withQueryString();
 

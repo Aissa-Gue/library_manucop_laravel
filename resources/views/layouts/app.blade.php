@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" type="image/x-icon" href="{{ URL::asset('img/favicon.ico') }}" />
 
-    <title>المكتبة المركزية | برنامج الفواتير</title>
+    <title>المكتبة المركزية | برنامج المخطوطات</title>
 
     @include('includes.requirements')
 </head>
@@ -16,10 +16,10 @@
 
     <div class="container-fluid my_mt">
         <div class="row">
-            <div class="col-sm-2">
+            <div class="d-none d-lg-block">
                 @include('includes.sidebar')
             </div>
-            <div class="col-sm-10 mt-3">
+            <div class="my_fixed_content mt-3">
                 @if (isset($page['title']))
                     <div class="alert alert-primary text-center mb-4" role="alert">
                         <h4>{{ $page['title'] }}</h4>
