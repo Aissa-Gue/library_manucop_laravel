@@ -139,7 +139,7 @@ $page = ['title' => 'معلومات الناسخ'];
                     <tr>
                         <th scope="col" width="140px" class="text-center">رقم الاستمارة</th>
                         <th scope="col">عنوان الكتاب</th>
-                        <th scope="col">النساخ</th>
+                        {{-- <th scope="col">النساخ</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -151,19 +151,19 @@ $page = ['title' => 'معلومات الناسخ'];
                                     <a class="text-decoration-none text-dark"
                                         href="{{ Route('manuscripts.show', $manuscript->id) }}">{{ $manuscript->book->title }}</a>
                                 </td>
-                                <td>
+                                {{-- <td>
                                     @foreach ($manuscript->transcribers as $transcriber)
                                         <span class="badge rounded-pill bg-primary p-2">
                                             <a href="{{ Route('transcribers.show', $transcriber->id) }}"
                                                 class="text-decoration-none text-light">{{ $transcriber->full_name }}</a>
                                         </span>
                                     @endforeach
-                                </td>
+                                </td> --}}
                             </tr>
                         @endforeach
                     @else
                         <tr>
-                            <td colspan="3" class="text-center fw-bold text-danger p-3">لا زلت لم تدخل استمارات لهذا الناسخ
+                            <td colspan="2" class="text-center fw-bold text-danger p-3">لا زلت لم تدخل استمارات لهذا الناسخ
                             </td>
                         </tr>
                     @endif
