@@ -1,4 +1,4 @@
-<div class="row">
+<div class="mb-4">
     <form id="quickSearchForm" action="{{ Route('search.quick.transSearch') }}" method="get">
         <div class="row justify-content-center mb-3">
             <div class="col-md-8">

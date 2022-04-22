@@ -24,9 +24,9 @@ class SettingController extends Controller
         $username = env('DB_USERNAME');
         $dbname = env('DB_DATABASE');
         $dbport = env('DB_PORT');
-        //$ignoreUsers = '--ignore-table=' . $dbname . '.users';
-        //$ignoreMigrations = '--ignore-table=' . $dbname . '.migrations';
-        $ignoreUsers = $ignoreMigrations = '';
+        $ignoreUsers = '--ignore-table=' . $dbname . '.users';
+        $ignoreMigrations = '--ignore-table=' . $dbname . '.migrations';
+        //$ignoreUsers = $ignoreMigrations = '';
 
         $d = date('Y-m-d');
         $t = time();

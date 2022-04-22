@@ -16,8 +16,9 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-           'name' => 'Library Manager',
+            'name' => 'Library Manager',
             'username' => 'admin',
+            'is_admin' => '1',
             'password' => Hash::make('admin')
         ]);
     }

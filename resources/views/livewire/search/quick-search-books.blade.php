@@ -1,4 +1,4 @@
-<div>
+<div class="mb-4">
     <div class="row justify-content-center mb-3">
         <div class="col-md-8">
             <div class="form-floating">

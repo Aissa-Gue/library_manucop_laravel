@@ -22,7 +22,7 @@
                 <div class="col-md-7">
                     <label for="author" class="form-label">المؤلفين</label>
                     <input type="text" placeholder="حدد مؤلف"
-                        class="form-control multidatalist @error('authorsArray') is-invalid @enderror" list="authors"
+                        class="form-select multidatalist @error('authorsArray') is-invalid @enderror" list="authors"
                         wire:model="author" id="author" onchange="getAuthor()">
 
                     <datalist id="authors">
@@ -66,7 +66,7 @@
                 <div class="col-md-7">
                     <label for="subject" class="form-label">المواضيع</label>
                     <input type="text" placeholder="حدد موضوع"
-                        class="form-control multidatalist @error('subjectsArray') is-invalid @enderror" list="subjects"
+                        class="form-select multidatalist @error('subjectsArray') is-invalid @enderror" list="subjects"
                         wire:model="subject" id="subject" onchange="getSubject()">
 
                     <datalist id="subjects">

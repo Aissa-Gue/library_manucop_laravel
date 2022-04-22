@@ -7,6 +7,7 @@ use App\Models\MatchingFont;
 use App\Models\Transcriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 
 class TranscriberController extends Controller
 {
@@ -286,7 +287,7 @@ class TranscriberController extends Controller
                 "label" => "تم حذف الناسخ بنجاح",
                 "bg" => "bg-success",
             ];
-            return redirect()->back()->with('message', $message);
+            return redirect()->route('transcribers.index')->with('message', $message);
         } catch (\Exception $e) {
             if (Transcriber::find($id)->manuscripts->count() > 0 || Transcriber::find($id)->matchers->count() > 0) {
                 $message = [
@@ -299,7 +300,7 @@ class TranscriberController extends Controller
                     "bg" => "bg-danger",
                 ];
             }
-            return redirect()->back()->with('message', $message);
+            return redirect()->route('transcribers.index')->with('message', $message);
         }
     }
 }

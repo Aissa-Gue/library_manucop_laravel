@@ -4,7 +4,7 @@
 $w_font_styles = ['المبسوط', 'المجوهر', 'المسند (الزمامي)', 'المدمج', 'الثلث المغربي', 'الكوفي المغربي'];
 $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 'الديواني', 'الرقعة'];
 ?>
-<div>
+<div class="mb-4">
     <div class="row justify-content-center mb-3">
         <div class="col-md-8">
             <h5 class="my_line"><span>ما يتعلق بالكتاب</span></h5>

@@ -114,7 +114,7 @@ class BookController extends Controller
                 "label" => "تم حذف الكتاب بنجاح",
                 "bg" => "bg-success",
             ];
-            return redirect()->back()->with('message', $message);
+            return redirect()->route('books.index')->with('message', $message);
         } catch (\Exception $e) {
 
             if (Book::find($id)->manuscripts->count() > 0) {
@@ -130,7 +130,7 @@ class BookController extends Controller
             }
 
             DB::rollBack();
-            return redirect()->back()->with('message', $message);
+            return redirect()->route('books.index')->with('message', $message);
         }
     }
 }

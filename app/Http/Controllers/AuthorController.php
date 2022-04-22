@@ -117,7 +117,7 @@ class AuthorController extends Controller
                 "label" => "تم حذف المؤلف بنجاح",
                 "bg" => "bg-success",
             ];
-            return redirect()->back()->with('message', $message);
+            return redirect()->route('authors.index')->with('message', $message);
         } catch (\Exception $e) {
             if (Author::find($id)->books->count() > 0) {
                 $message = [
@@ -130,7 +130,7 @@ class AuthorController extends Controller
                     "bg" => "bg-danger",
                 ];
             }
-            return redirect()->back()->with('message', $message);
+            return redirect()->route('authors.index')->with('message', $message);
         }
     }
 }

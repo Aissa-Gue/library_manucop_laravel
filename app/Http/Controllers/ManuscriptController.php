@@ -377,7 +377,7 @@ class ManuscriptController extends Controller
                 "label" => "تم حذف الاستمارة بنجاح",
                 "bg" => "bg-success",
             ];
-            return redirect()->back()->with('message', $message);
+            return redirect()->route('manuscripts.index')->with('message', $message);
         } catch (\Exception $e) {
             $message = [
                 "label" => "حدثت مشكلة، لم يتم حذف الاستمارة",
@@ -385,7 +385,7 @@ class ManuscriptController extends Controller
             ];
 
             DB::rollBack();
-            return redirect()->back()->with('message', $message);
+            return redirect()->route('manuscripts.index')->with('message', $message);
         }
     }
 }

@@ -52,7 +52,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="transcriber1" class="form-label">اسم الناسخ (من القائمة)</label>
-                            <input type='text' placeholder='حدد اسم الناسخ' class='form-control' list='transcribers1'
+                            <input type='text' placeholder='حدد اسم الناسخ' class='form-select' list='transcribers1'
                                 wire:model="transcriber1" id="transcriber1" name="transcriber1_name"
                                 wire:change="setTranscriberId(1, transcriber1_id)">
 
@@ -92,7 +92,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                             <label for="fontMatcher1" class="form-label">الناسخ المشابه له في
                                 الخط</label>
                             <input type="text" placeholder='حدد اسم الناسخ المشابه له في الخط'
-                                class='form-control multidatalist' list='fontMatchers1' wire:model="fontMatcher1"
+                                class='form-select multidatalist' list='fontMatchers1' wire:model="fontMatcher1"
                                 id="fontMatcher1" onchange="getFontMatcher1()">
 
                             <datalist id="fontMatchers1">
@@ -143,7 +143,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="transcriber2" class="form-label">اسم الناسخ (من القائمة)</label>
-                            <input type='text' placeholder='حدد اسم الناسخ' class='form-control' list='transcribers2'
+                            <input type='text' placeholder='حدد اسم الناسخ' class='form-select' list='transcribers2'
                                 wire:model="transcriber2" id="transcriber2" name="transcriber2_name"
                                 wire:change="setTranscriberId(2, transcriber2_id)">
 
@@ -183,7 +183,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                             <label for="fontMatcher2" class="form-label">الناسخ المشابه له في
                                 الخط</label>
                             <input type="text" placeholder='حدد اسم الناسخ المشابه له في الخط'
-                                class='form-control multidatalist' list='fontMatchers2' wire:model="fontMatcher2"
+                                class='form-select multidatalist' list='fontMatchers2' wire:model="fontMatcher2"
                                 id="fontMatcher2" onchange="getFontMatcher2()">
                             <datalist id="fontMatchers2">
                                 @foreach ($fontMatchers2 as $fontMatcher2)
@@ -232,7 +232,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="transcriber3" class="form-label">اسم الناسخ (من القائمة)</label>
-                            <input type='text' placeholder='حدد اسم الناسخ' class='form-control' list='transcribers3'
+                            <input type='text' placeholder='حدد اسم الناسخ' class='form-select' list='transcribers3'
                                 wire:model="transcriber3" id="transcriber3" name="transcriber3_name"
                                 wire:change="setTranscriberId(3, transcriber3_id)">
 
@@ -271,7 +271,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                             <label for="fontMatcher3" class="form-label">الناسخ المشابه له في
                                 الخط</label>
                             <input type="text" placeholder='حدد اسم الناسخ المشابه له في الخط'
-                                class='form-control multidatalist' list='fontMatchers3' wire:model="fontMatcher3"
+                                class='form-select multidatalist' list='fontMatchers3' wire:model="fontMatcher3"
                                 id="fontMatcher3" onchange="getFontMatcher3()">
                             <datalist id="fontMatchers3">
                                 @foreach ($fontMatchers3 as $fontMatcher3)
@@ -320,7 +320,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="transcriber4" class="form-label">اسم الناسخ (من القائمة)</label>
-                            <input type='text' placeholder='حدد اسم الناسخ' class='form-control' list='transcribers4'
+                            <input type='text' placeholder='حدد اسم الناسخ' class='form-select' list='transcribers4'
                                 wire:model="transcriber4" id="transcriber4" name="transcriber4_name"
                                 wire:change="setTranscriberId(4, transcriber4_id)">
 
@@ -359,7 +359,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                             <label for="fontMatcher4" class="form-label">الناسخ المشابه له في
                                 الخط</label>
                             <input type="text" placeholder='حدد اسم الناسخ المشابه له في الخط'
-                                class='form-control multidatalist' list='fontMatchers4' wire:model="fontMatcher4"
+                                class='form-select multidatalist' list='fontMatchers4' wire:model="fontMatcher4"
                                 id="fontMatcher4" onchange="getFontMatcher4()">
                             <datalist id="fontMatchers4">
                                 @foreach ($fontMatchers4 as $fontMatcher4)
@@ -983,7 +983,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                 <div class="col-md-5">
                     <label for="motif_ids" class="form-label">الزخارف المستعملة</label>
                     <input wire:model="motif" list="motifs" type="text" placeholder="حدد زخرفة"
-                        class="form-control multidatalist" id="motif" onchange="getMotif()">
+                        class="form-select multidatalist" id="motif" onchange="getMotif()">
                     <datalist id="motifs">
                         @foreach ($motifs as $motif)
                             <option value="{{ $motif->name }}" data-id="{{ $motif->id }}">
@@ -1022,7 +1022,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
             <div class="row mt-2">
                 <div class="col-md-5">
                     <label for="color_ids" class="form-label">ألوان الحبر المستعملة</label>
-                    <input wire:model="color" type="text" placeholder='حدد لون' class='form-control multidatalist'
+                    <input wire:model="color" type="text" placeholder='حدد لون' class='form-select multidatalist'
                         list='colors' id="color" onchange="getColor()">
                     <datalist id="colors">
                         @foreach ($colors as $color)
