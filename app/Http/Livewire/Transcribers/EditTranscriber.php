@@ -32,8 +32,28 @@ class EditTranscriber extends Component
 
     public function mount()
     {
-        $this->currentDescent = 5;
-        $this->currentOtherName = 4;
+        if ($this->transcriber->descent5 != null) {
+            $this->currentDescent = 5;
+        } elseif ($this->transcriber->descent4 != null) {
+            $this->currentDescent = 4;
+        } elseif ($this->transcriber->descent3 != null) {
+            $this->currentDescent = 3;
+        } elseif ($this->transcriber->descent2 != null) {
+            $this->currentDescent = 2;
+        } else {
+            $this->currentDescent = 1;
+        }
+
+        if ($this->transcriber->other_name4 != null) {
+            $this->currentOtherName = 4;
+        } elseif ($this->transcriber->other_name3 != null) {
+            $this->currentOtherName = 3;
+        } elseif ($this->transcriber->other_name2 != null) {
+            $this->currentOtherName = 2;
+        } else {
+            $this->currentOtherName = 1;
+        }
+
 
         $this->full_name = $this->transcriber->full_name;
         $this->descent1 = $this->transcriber->descent1;
