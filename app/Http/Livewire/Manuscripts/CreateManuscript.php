@@ -169,14 +169,18 @@ class CreateManuscript extends Component
         return Cabinet::where('name', 'LIKE', '%' . $this->cabinet . '%')->paginate(40);
     }
 
-    public function cities()
-    {
-        return $cities = City::where('name', 'LIKE', '%' . $this->city . '%')->paginate(40);
-    }
-
     public function countries()
     {
         return $countries = Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(40);
+    }
+
+    public function cities()
+    {
+        return $cities = City::whereHas('country', function ($query) {
+            $query->where('name', $this->country);
+        })
+            ->where('name', 'LIKE', '%' . $this->city . '%')
+            ->paginate(40);
     }
 
     public function motifs()
@@ -380,8 +384,8 @@ class CreateManuscript extends Component
             ->with('transcribers4', $this->transcribers4())
             ->with('fontMatchers4', $this->fontMatchers4())
             ->with('transcriber4_matchers', $this->transcriber4_matchers)
-            ->with('cities', $this->cities())
             ->with('countries', $this->countries())
+            ->with('cities', $this->cities())
             ->with('books', $this->books())
             ->with('cabinets', $this->cabinets())
             ->with('motifs', $this->motifs())
@@ -620,7 +624,6 @@ class CreateManuscript extends Component
             ];
             return back()->with('message', $message);
         }
-
 
         //   $this->reset();
         //   $this->currentStep = 1;

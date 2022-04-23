@@ -13,6 +13,11 @@ $subNavs = [
         'request' => 'cities',
     ],
 ];
+
+$countryLivewire = [
+    'label' => 'البلد',
+    'placeholder' => 'اختر بلد',
+];
 ?>
 
 @include('includes.subNavs', $subNavs)
@@ -23,7 +28,34 @@ $subNavs = [
         <legend class="scheduler-border">إضافة مدينة</legend>
 
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-4">
+                <input type="hidden" name="country_id" id="country_id_hidden" value="">
+                <livewire:country-search :countryLivewire="$countryLivewire" />
+
+                @error('country_id')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+                <script>
+                    // add hidden input contains data-id of selected value (datalist single select)
+                    function getId(input_id, datalist_id, hidden_input_id) {
+                        var val = $(input_id).val();
+                        var dataid = $(datalist_id + " option")
+                            .filter(function() {
+                                return this.value === val;
+                            })
+                            .data("id");
+                        if (dataid == null) {
+                            document.getElementById(hidden_input_id).value = null;
+                        } else {
+                            document.getElementById(hidden_input_id).value = dataid;
+                        }
+                        console.log(dataid);
+                    }
+                </script>
+            </div>
+            <div class="col-md-5">
                 <label for="city" class="form-label">اسم المدينة</label>
                 <input name="name" class="form-control @error('name') is-invalid @enderror" id="city"
                     placeholder="أدخل اسم المدينة">

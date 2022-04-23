@@ -28,6 +28,11 @@ $page = ['title' => 'قائمة المدن'];
                     </div>
                     <input type="text" name="name" class="form-control" placeholder="أدخل اسم المدينة"
                         value="{{ request('name') }}">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> البلد</span>
+                    </div>
+                    <input type="text" name="country" class="form-control" placeholder="أدخل اسم البلد"
+                        value="{{ request('country') }}">
                     <div class="input-group-append">
                         <button class="btn btn-primary" type="submit">بحث</button>
                     </div>
@@ -47,6 +52,7 @@ $page = ['title' => 'قائمة المدن'];
                 <tr>
                     <th scope="col" class="text-center">رقم المدينة</th>
                     <th scope="col">اسم المدينة</th>
+                    <th scope="col">البلد</th>
                     <th scope="col" class="text-center">عدد المنسوخات</th>
                     <th scope="col" class="text-center">عدد الناسخين</th>
                     <th scope="col" class="text-center">تعديل</th>
@@ -70,6 +76,7 @@ $page = ['title' => 'قائمة المدن'];
                     <tr>
                         <th scope="row" class="text-center">{{ $city->id }}</th>
                         <td>{{ $city->name }}</td>
+                        <td>{{ $city->country->name }}</td>
                         <td class="text-center">
                             {{ $city->manuscripts ? $city->manuscripts->count() : 0 }}
                         </td>

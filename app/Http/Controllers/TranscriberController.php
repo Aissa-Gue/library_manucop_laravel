@@ -123,47 +123,6 @@ class TranscriberController extends Controller
         return view('transcribers.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'descent1' => 'nullable|string|max:255',
-            'descent2' => 'nullable|string|max:255',
-            'descent3' => 'nullable|string|max:255',
-            'descent4' => 'nullable|string|max:255',
-            'descent5' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'nickname' => 'nullable|string|max:255',
-            'other_name1' => 'nullable|string|max:255',
-            'other_name2' => 'nullable|string|max:255',
-            'other_name3' => 'nullable|string|max:255',
-            'other_name4' => 'nullable|string|max:255',
-            'country_id' => 'nullable|integer|exists:countries,id',
-            'city_id' => 'nullable|integer|exists:cities,id',
-        ]);
-
-        try {
-            $transcriber = Transcriber::create($validated);
-            $message = [
-                "label" => "تم إضافة الناسخ بنجاح",
-                "bg" => "bg-success",
-            ];
-        } catch (\Exception $e) {
-            $message = [
-                "label" => "حدثت مشكلة، لم يتم إضافة الناسخ",
-                "bg" => "bg-danger",
-            ];
-        }
-
-        return redirect()->route('transcribers.show', $transcriber->id)
-            ->with('message', $message);
-    }
 
     /**
      * Display the specified resource.
@@ -226,51 +185,8 @@ class TranscriberController extends Controller
      */
     public function edit($id)
     {
-        $transcriber = Transcriber::with('country', 'city')->find($id);
+        $transcriber = Transcriber::find($id);
         return view('transcribers.edit')->with('transcriber', $transcriber);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'full_name' => 'required|string|max:255',
-            'descent1' => 'nullable|string|max:255',
-            'descent2' => 'nullable|string|max:255',
-            'descent3' => 'nullable|string|max:255',
-            'descent4' => 'nullable|string|max:255',
-            'descent5' => 'nullable|string|max:255',
-            'last_name' => 'nullable|string|max:255',
-            'nickname' => 'nullable|string|max:255',
-            'other_name1' => 'nullable|string|max:255',
-            'other_name2' => 'nullable|string|max:255',
-            'other_name3' => 'nullable|string|max:255',
-            'other_name4' => 'nullable|string|max:255',
-            'country_id' => 'nullable|integer|exists:countries,id',
-            'city_id' => 'nullable|integer|exists:cities,id',
-        ]);
-
-        try {
-            $transcriber = Transcriber::where('id', $id)->update($validated);
-            $message = [
-                "label" => "تم تعديل معلومات الناسخ بنجاح",
-                "bg" => "bg-success",
-            ];
-        } catch (\Exception $e) {
-            $message = [
-                "label" => "حدثت مشكلة، لم يتم تعديل معلومات الناسخ",
-                "bg" => "bg-danger",
-            ];
-        }
-
-        return redirect()->route('transcribers.show', $id)
-            ->with('message', $message);
     }
 
     /**

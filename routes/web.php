@@ -60,13 +60,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search/quick/books/results', [BookController::class, 'quickSearch'])->name('search.quick.bookSearch');
 
     /** countries */
-    Route::resource('countries', CountryController::class)->except('show');
+    Route::resource('countries', CountryController::class)->except('show', 'edit');
 
     /** cities */
-    Route::resource('cities', CityController::class)->except('show');
+    Route::resource('cities', CityController::class)->except('show', 'edit');
 
     /** transcribers */
-    Route::resource('transcribers', TranscriberController::class);
+    Route::resource('transcribers', TranscriberController::class)->except('store', 'update');
 
     /** authors */
     Route::resource('authors', AuthorController::class);
@@ -79,11 +79,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/books/{id}', [BookController::class, 'destroy'])->name('books.destroy');
 
     /** manuscripts */
-    Route::get('/manuscripts', [ManuscriptController::class, 'index'])->name('manuscripts.index');
-    Route::get('/manuscripts/create', [ManuscriptController::class, 'create'])->name('manuscripts.create');
-    Route::get('/manuscripts/{id}/edit', [ManuscriptController::class, 'edit'])->name('manuscripts.edit');
-    Route::get('/manuscripts/{id}', [ManuscriptController::class, 'show'])->name('manuscripts.show');
-    Route::delete('/manuscripts/{id}', [ManuscriptController::class, 'destroy'])->name('manuscripts.destroy');
+    Route::resource('manuscripts', ManuscriptController::class)->except('store', 'update');
 });
 
 Route::group(['middleware' => ['auth', 'admin']], function () {

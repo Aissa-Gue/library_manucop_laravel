@@ -15,9 +15,15 @@ class CountryController extends Controller
      */
     public function index(Request $request)
     {
-        $countries = Country::Where('name', 'LIKE', '%' . $request->name . '%')
-            ->paginate(80)
-            ->withQueryString();
+        if ($request->id && !$request->name) {
+            $countries = Country::where('id', $request->id)
+                ->paginate(80)
+                ->withQueryString();
+        } else {
+            $countries = Country::Where('name', 'LIKE', '%' . $request->name . '%')
+                ->paginate(80)
+                ->withQueryString();
+        }
 
         return view('countries.index')->with('countries', $countries);
     }
@@ -31,7 +37,7 @@ class CountryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|unique:countries',
+            'name' => 'required|unique:countries,name',
         ]);
         $country = Country::create($validated);
         $message = [
@@ -52,7 +58,7 @@ class CountryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name1' => 'required|max:255|unique:countries,id,' . $id,
+            'name1' => 'required|max:255|unique:countries,name,' . $id,
         ]);
 
         $messageFail = [

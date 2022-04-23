@@ -91,12 +91,12 @@ $page = ['title' => 'معلومات الناسخ'];
             <!--- second column -->
             <div class="col-md-4">
                 <dl class="row">
-                    <dt class="col-md-auto">المدينة:</dt>
-                    <dd class="col-md-auto">{{ $transcriber->city ? $transcriber->city->name : '' }}</dd>
-                </dl>
-                <dl class="row">
                     <dt class="col-md-auto">البلدة:</dt>
                     <dd class="col-md-auto">{{ $transcriber->country ? $transcriber->country->name : '' }}</dd>
+                </dl>
+                <dl class="row">
+                    <dt class="col-md-auto">المدينة:</dt>
+                    <dd class="col-md-auto">{{ $transcriber->city ? $transcriber->city->name : '' }}</dd>
                 </dl>
                 <dl class="row">
                     <dt class="col-md-auto">أقدم سنة نسخ:</dt>

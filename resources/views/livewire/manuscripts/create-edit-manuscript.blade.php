@@ -661,22 +661,6 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                         </div>
                     @enderror
                 </div>
-                <div class="col-md-3">
-                    <label for="city" class="form-label">المدينة</label>
-                    <input type='text' placeholder='حدد مدينة النسخ' class='form-select' list='cities' wire:model="city"
-                        id="city" name="city_name" wire:change="setCityId(city_id)">
-
-                    <datalist id="cities">
-                        @foreach ($cities as $city)
-                            <option value="{{ $city->name }}" data-id="{{ $city->id }}">
-                        @endforeach
-                    </datalist>
-                    @error('city_id')
-                        <div class="form-text text-danger">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
 
                 <div class="col-md-3">
                     <label for="country" class="form-label">البلد حاليا</label>
@@ -690,6 +674,23 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                     </datalist>
 
                     @error('country_id')
+                        <div class="form-text text-danger">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+
+                <div class="col-md-3">
+                    <label for="city" class="form-label">المدينة</label>
+                    <input type='text' placeholder='حدد مدينة النسخ' class='form-select' list='cities' wire:model="city"
+                        id="city" name="city_name" wire:change="setCityId(city_id)">
+
+                    <datalist id="cities">
+                        @foreach ($cities as $city)
+                            <option value="{{ $city->name }}" data-id="{{ $city->id }}">
+                        @endforeach
+                    </datalist>
+                    @error('city_id')
                         <div class="form-text text-danger">
                             {{ $message }}
                         </div>

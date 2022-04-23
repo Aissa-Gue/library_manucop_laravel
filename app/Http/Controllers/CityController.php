@@ -15,13 +15,35 @@ class CityController extends Controller
      */
     public function index(Request $request)
     {
-        $cities = City::Where('name', 'LIKE', '%' . $request->name . '%')
-            ->paginate(80)
-            ->withQueryString();
+        if ($request->id && !$request->name) {
+            $cities = City::where('id', $request->id)
+                ->paginate(80)
+                ->withQueryString();
+        } else {
+            $cities = City::with('country')
+                ->where('name', 'LIKE', '%' . $request->name . '%')
+                ->whereHas('country', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->country . '%');
+                })
+                ->paginate(80)
+                ->withQueryString();
+        }
 
         return view('cities.index')->with('cities', $cities);
     }
 
+    public function cityExists($country_id, $city_name)
+    {
+        //test if city exists
+        $cities = City::where('country_id', $country_id)
+            ->where('name', $city_name)
+            ->get();
+        if ($cities->count() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -32,8 +54,19 @@ class CityController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required',
+            'country_id' => 'required|exists:countries,id',
+            'name' => 'required|max:255',
         ]);
+
+        //test if city exists
+        if ($this->cityExists($request->country_id, $request->name)) {
+            $messageFail = [
+                "label" => "المدينة موجودة مسبقا",
+                "bg" => "bg-danger",
+            ];
+            return redirect()->back()->with('message', $messageFail);
+        }
+
         $city = City::create($validated);
         $message = [
             "label" => "تم إضافة المدينة بنجاح",
@@ -55,8 +88,18 @@ class CityController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name1' => 'required|max:255|unique:countries,id,' . $id,
+            'country_id' => 'required|exists:countries,id',
+            'name1' => 'required|max:255',
         ]);
+
+        //test if city exists
+        if ($this->cityExists($request->country_id, $request->name1)) {
+            $messageFail = [
+                "label" => "المدينة موجودة مسبقا",
+                "bg" => "bg-danger",
+            ];
+            return redirect()->back()->with('message', $messageFail);
+        }
 
         $messageFail = [
             "label" => "حدثت مشكلة، لم يتم تعديل اسم المدينة",
@@ -72,7 +115,8 @@ class CityController extends Controller
             return redirect()->back()->with('message', $messageFail);
         } else {
             try {
-                City::where('id', $id)->update(['name' => $request->name1]);
+                City::where('id', $id)
+                    ->update(['name' => $request->name1]);
                 return redirect()->back()->with('message', $messageSuccess);
             } catch (\Exception $e) {
                 return redirect()->back()->with('message', $messageFail);
