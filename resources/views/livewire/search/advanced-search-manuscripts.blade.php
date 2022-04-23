@@ -204,7 +204,7 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
         </div>
         <div class="col-md-4">
             <div class="form-floating">
-                <select class="form-select" id="is_truncated" name="is_truncated">
+                <select class="form-select" id="is_not_truncated" name="is_not_truncated">
                     <option selected></option>
                     <option value="1">تامة</option>
                     <option value="0">مبتورة</option>

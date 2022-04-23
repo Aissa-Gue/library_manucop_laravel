@@ -46,96 +46,94 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
 
 
         <div class="step-one bg-white-trans @if ($currentStep != 1) d-none @endif">
-            @if ($nbrOfTranscribers >= 1)
-                <h5 class="my_line"><span>الناسخ الأول</span></h5>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="transcriber1" class="form-label">اسم الناسخ (من القائمة)</label>
-                            <input type='text' placeholder='حدد اسم الناسخ' class='form-select' list='transcribers1'
-                                wire:model="transcriber1" id="transcriber1" name="transcriber1_name"
-                                wire:change="setTranscriberId(1, transcriber1_id)">
+            <h5 class="my_line"><span>الناسخ الأول</span></h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="transcriber1" class="form-label">اسم الناسخ (من القائمة)</label>
+                        <input type='text' placeholder='حدد اسم الناسخ' class='form-select' list='transcribers1'
+                            wire:model="transcriber1" id="transcriber1" name="transcriber1_name"
+                            wire:change="setTranscriberId(1, transcriber1_id)">
 
-                            <datalist id="transcribers1">
-                                @foreach ($transcribers1 as $transcriber1)
-                                    <option
-                                        value="{{ $transcriber1->full_name }}{{ $transcriber1->descent1 ? ' ' . $transcriber1->descent1 : '' }}{{ $transcriber1->descent2 ? ' ' . $transcriber1->descent2 : '' }}{{ $transcriber1->descent3 ? ' ' . $transcriber1->descent3 : '' }}{{ $transcriber1->descent4 ? ' ' . $transcriber1->descent4 : '' }}{{ $transcriber1->descent5 ? ' ' . $transcriber1->descent5 : '' }}{{ $transcriber1->last_name ? ' ' . $transcriber1->last_name : '' }}{{ $transcriber1->nickname ? ' ' . $transcriber1->nickname : '' }}"
-                                        data-id="{{ $transcriber1->id }}">
-                                @endforeach
-                            </datalist>
+                        <datalist id="transcribers1">
+                            @foreach ($transcribers1 as $transcriber1)
+                                <option
+                                    value="{{ $transcriber1->full_name }}{{ $transcriber1->descent1 ? ' ' . $transcriber1->descent1 : '' }}{{ $transcriber1->descent2 ? ' ' . $transcriber1->descent2 : '' }}{{ $transcriber1->descent3 ? ' ' . $transcriber1->descent3 : '' }}{{ $transcriber1->descent4 ? ' ' . $transcriber1->descent4 : '' }}{{ $transcriber1->descent5 ? ' ' . $transcriber1->descent5 : '' }}{{ $transcriber1->last_name ? ' ' . $transcriber1->last_name : '' }}{{ $transcriber1->nickname ? ' ' . $transcriber1->nickname : '' }}"
+                                    data-id="{{ $transcriber1->id }}">
+                            @endforeach
+                        </datalist>
 
-                            <span class="text-danger">
-                                @error('transcriber1_id')
-                                    {{ $message }}
-                                @enderror
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="name_in_manu1" class="form-label">اسم الناسخ الوارد في
-                                النسخة</label>
-                            <input name="name_in_manu1" wire:model="name_in_manu1"
-                                class="form-control @error('name_in_manu1') is-invalid @enderror" id="name_in_manu1"
-                                placeholder="أدخل اسم الناسخ 1 كما ورد في النسخة">
-                            <span class="text-danger">
-                                @error('name_in_manu1')
-                                    {{ $message }}
-                                @enderror
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 mt-2">
-                        <div class="form-group">
-                            <label for="fontMatcher1" class="form-label">الناسخ المشابه له في
-                                الخط</label>
-                            <input type="text" placeholder='حدد اسم الناسخ المشابه له في الخط'
-                                class='form-select multidatalist' list='fontMatchers1' wire:model="fontMatcher1"
-                                id="fontMatcher1" onchange="getFontMatcher1()">
-
-                            <datalist id="fontMatchers1">
-                                @foreach ($fontMatchers1 as $fontMatcher1)
-                                    <option
-                                        value="{{ $fontMatcher1->full_name }}{{ $fontMatcher1->descent1 ? ' ' . $fontMatcher1->descent1 : '' }}{{ $fontMatcher1->descent2 ? ' ' . $fontMatcher1->descent2 : '' }}{{ $fontMatcher1->descent3 ? ' ' . $fontMatcher1->descent3 : '' }}{{ $fontMatcher1->descent4 ? ' ' . $fontMatcher1->descent4 : '' }}{{ $fontMatcher1->descent5 ? ' ' . $fontMatcher1->descent5 : '' }}{{ $fontMatcher1->last_name ? ' ' . $fontMatcher1->last_name : '' }}{{ $fontMatcher1->nickname ? ' ' . $fontMatcher1->nickname : '' }}"
-                                        data-id="{{ $fontMatcher1->id }}">
-                                @endforeach
-                            </datalist>
-
-                            <span class="text-danger">
-                                @error('transcriber1_matchers')
-                                    {{ $message }}
-                                @enderror
-                                @error('transcriber1_matchers.*.id')
-                                    {{ $message }}
-                                @enderror
-                            </span>
-
-                            <!--- List of fontMatchers badges -->
-                            <div id="transcriber1FontMatchersBadges">
-                                @foreach ($transcriber1_matchers as $transcriber1_matcher)
-                                    <p class="badge rounded-pill bg-success mx-1 p-2 mt-2">
-                                        {{ $transcriber1_matcher['name'] }}
-                                        <a wire:click="deleteFontMatcher(1, '{{ $transcriber1_matcher['id'] }}')"
-                                            style="cursor: pointer" class="text-white text-decoration-none mx-1"> <i
-                                                class="fas fa-times"></i>
-                                        </a>
-                                    </p>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    <!--- add fontMatcher icon -->
-                    <div class="col-md-auto"><br><br>
-                        <a style="cursor: pointer"
-                            wire:click="pushToTranscriberMatchers(1,fontMatcher1['id'], fontMatcher1['name'])">
-                            <i class="fas fa-plus-circle fs-4"></i>
-                        </a>
+                        <span class="text-danger">
+                            @error('transcriber1_id')
+                                {{ $message }}
+                            @enderror
+                        </span>
                     </div>
                 </div>
-                <!--end row-->
-            @endif
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="name_in_manu1" class="form-label">اسم الناسخ الوارد في
+                            النسخة</label>
+                        <input name="name_in_manu1" wire:model="name_in_manu1"
+                            class="form-control @error('name_in_manu1') is-invalid @enderror" id="name_in_manu1"
+                            placeholder="أدخل اسم الناسخ 1 كما ورد في النسخة">
+                        <span class="text-danger">
+                            @error('name_in_manu1')
+                                {{ $message }}
+                            @enderror
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mt-2">
+                    <div class="form-group">
+                        <label for="fontMatcher1" class="form-label">الناسخ المشابه له في
+                            الخط</label>
+                        <input type="text" placeholder='حدد اسم الناسخ المشابه له في الخط'
+                            class='form-select multidatalist' list='fontMatchers1' wire:model="fontMatcher1"
+                            id="fontMatcher1" onchange="getFontMatcher1()">
+
+                        <datalist id="fontMatchers1">
+                            @foreach ($fontMatchers1 as $fontMatcher1)
+                                <option
+                                    value="{{ $fontMatcher1->full_name }}{{ $fontMatcher1->descent1 ? ' ' . $fontMatcher1->descent1 : '' }}{{ $fontMatcher1->descent2 ? ' ' . $fontMatcher1->descent2 : '' }}{{ $fontMatcher1->descent3 ? ' ' . $fontMatcher1->descent3 : '' }}{{ $fontMatcher1->descent4 ? ' ' . $fontMatcher1->descent4 : '' }}{{ $fontMatcher1->descent5 ? ' ' . $fontMatcher1->descent5 : '' }}{{ $fontMatcher1->last_name ? ' ' . $fontMatcher1->last_name : '' }}{{ $fontMatcher1->nickname ? ' ' . $fontMatcher1->nickname : '' }}"
+                                    data-id="{{ $fontMatcher1->id }}">
+                            @endforeach
+                        </datalist>
+
+                        <span class="text-danger">
+                            @error('transcriber1_matchers')
+                                {{ $message }}
+                            @enderror
+                            @error('transcriber1_matchers.*.id')
+                                {{ $message }}
+                            @enderror
+                        </span>
+
+                        <!--- List of fontMatchers badges -->
+                        <div id="transcriber1FontMatchersBadges">
+                            @foreach ($transcriber1_matchers as $transcriber1_matcher)
+                                <p class="badge rounded-pill bg-success mx-1 p-2 mt-2">
+                                    {{ $transcriber1_matcher['name'] }}
+                                    <a wire:click="deleteFontMatcher(1, '{{ $transcriber1_matcher['id'] }}')"
+                                        style="cursor: pointer" class="text-white text-decoration-none mx-1"> <i
+                                            class="fas fa-times"></i>
+                                    </a>
+                                </p>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <!--- add fontMatcher icon -->
+                <div class="col-md-auto"><br><br>
+                    <a style="cursor: pointer"
+                        wire:click="pushToTranscriberMatchers(1,fontMatcher1['id'], fontMatcher1['name'])">
+                        <i class="fas fa-plus-circle fs-4"></i>
+                    </a>
+                </div>
+            </div>
+            <!--end row-->
 
             <div class="@if ($nbrOfTranscribers < 2) d-none @endif">
                 <h5 class="my_line"><span>الناسخ الثاني</span></h5>
@@ -912,15 +910,15 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
 
             <div class="row mt-2">
                 <div class="col-md-3">
-                    <label for="is_truncated" class="form-label">التمام والبتر</label>
-                    <select wire:model="is_truncated" name="is_truncated" id="is_truncated"
-                        class="form-select @error('is_truncated') is-invalid @enderror">
+                    <label for="is_not_truncated" class="form-label">التمام والبتر</label>
+                    <select wire:model="is_not_truncated" name="is_not_truncated" id="is_not_truncated"
+                        class="form-select @error('is_not_truncated') is-invalid @enderror">
                         <option selected>- حدد خيار -</option>
                         <option value="1">تامة</option>
                         <option value="0">مبتورة
                         </option>
                     </select>
-                    @error('is_truncated')
+                    @error('is_not_truncated')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>

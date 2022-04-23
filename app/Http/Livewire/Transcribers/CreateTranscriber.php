@@ -68,15 +68,17 @@ class CreateTranscriber extends Component
         }
     }
 
+    public function setCountryId($data_id)
+    {
+        $this->reset('city', 'city_id');
+        return $this->country_id = $data_id;
+    }
+
     public function setCityId($data_id)
     {
         return $this->city_id = $data_id;
     }
 
-    public function setCountryId($data_id)
-    {
-        return $this->country_id = $data_id;
-    }
 
 
     public function render()

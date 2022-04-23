@@ -40,7 +40,7 @@ class Manuscript extends Model
         'paper_size',
         'size_notes',
         'save_status',
-        'is_truncated',
+        'is_not_truncated',
         'truncation_notes',
 
         'transcribed_from',

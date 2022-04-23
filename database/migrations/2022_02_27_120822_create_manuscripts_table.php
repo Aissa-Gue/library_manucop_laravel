@@ -31,31 +31,31 @@ class CreateManuscriptsTable extends Migration
             $table->integer('trans_eyear_m')->nullable();
 
             $table->string('trans_place')->nullable();
-            $table->boolean('signed_in');//changed
+            $table->boolean('signed_in'); //changed
 
             $table->foreignId('cabinet_id')->nullable()->references('id')->on('cabinets');
             $table->integer('nbr_in_cabinet')->nullable();
-            $table->string('manu_type')->nullable();//type enum
-            $table->integer('nbr_in_index')->nullable();//changed
+            $table->string('manu_type')->nullable(); //type enum
+            $table->integer('nbr_in_index')->nullable(); //changed
 
             $table->string('font')->nullable();
             $table->string('font_style')->nullable();
             $table->boolean('regular_lines')->nullable();
             $table->string('lines_notes')->nullable();
 
-            $table->integer('nbr_of_papers')->nullable();//added
+            $table->integer('nbr_of_papers')->nullable(); //added
             $table->integer('paper_size')->nullable();
-            $table->string('size_notes')->nullable();//added
+            $table->string('size_notes')->nullable(); //added
 
-            $table->string('save_status')->nullable();//added حالة الحفظ
-            $table->boolean('is_truncated')->nullable();//added التمام والبتر
-            $table->string('truncation_notes')->nullable();//added ملاحظة حول مكان البتر
+            $table->string('save_status')->nullable(); //added حالة الحفظ
+            $table->boolean('is_not_truncated')->nullable(); //added التمام والبتر
+            $table->string('truncation_notes')->nullable(); //added ملاحظة حول مكان البتر
 
             $table->string('transcribed_from')->nullable();
             $table->string('transcribed_to')->nullable();
 
-            $table->string('manuscript_level')->nullable();//changed
-            $table->string('transcriber_level')->nullable();//changed
+            $table->string('manuscript_level')->nullable(); //changed
+            $table->string('transcriber_level')->nullable(); //changed
 
             $table->boolean('rost_completion')->nullable(); // ترميم وإتمام
 

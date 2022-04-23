@@ -83,7 +83,7 @@ class EditManuscript extends Component
     public $size_notes;
     public $regular_lines;
     public $lines_notes;
-    public $is_truncated;
+    public $is_not_truncated;
     public $truncation_notes;
     public $nbr_of_papers;
     public $save_status;
@@ -165,7 +165,7 @@ class EditManuscript extends Component
         $this->size_notes = $this->manuscript->size_notes;
         $this->regular_lines = $this->manuscript->regular_lines;
         $this->lines_notes = $this->manuscript->lines_notes;
-        $this->is_truncated = $this->manuscript->is_truncated;
+        $this->is_not_truncated = $this->manuscript->is_not_truncated;
         $this->truncation_notes = $this->manuscript->truncation_notes;
         $this->nbr_of_papers = $this->manuscript->nbr_of_papers;
         $this->save_status = $this->manuscript->save_status;
@@ -248,14 +248,18 @@ class EditManuscript extends Component
         return Cabinet::where('name', 'LIKE', '%' . $this->cabinet . '%')->paginate(40);
     }
 
-    public function cities()
-    {
-        return $cities = City::where('name', 'LIKE', '%' . $this->city . '%')->paginate(40);
-    }
-
     public function countries()
     {
         return $countries = Country::where('name', 'LIKE', '%' . $this->country . '%')->paginate(40);
+    }
+
+    public function cities()
+    {
+        return $cities = City::whereHas('country', function ($query) {
+            $query->where('name', $this->country);
+        })
+            ->where('name', 'LIKE', '%' . $this->city . '%')
+            ->paginate(40);
     }
 
     public function motifs()
@@ -408,15 +412,17 @@ class EditManuscript extends Component
         return $this->cabinet_id = $data_id;
     }
 
+    public function setCountryId($data_id)
+    {
+        $this->reset('city', 'city_id');
+        return $this->country_id = $data_id;
+    }
+
     public function setCityId($data_id)
     {
         return $this->city_id = $data_id;
     }
 
-    public function setCountryId($data_id)
-    {
-        return $this->country_id = $data_id;
-    }
 
 
     public function increaseNbrOfTranscribers()
@@ -566,8 +572,8 @@ class EditManuscript extends Component
                 'size_notes' => 'required_with:paper_size|max:255',
 
                 'save_status' => 'nullable|string|max:255|in:حسنة,متوسطة,رديئة,من حسنة إلى متوسطة,من متوسطة إلى رديئة',
-                'is_truncated' => 'nullable|boolean',
-                'truncation_notes' => 'required_with:is_truncated|max:255',
+                'is_not_truncated' => 'nullable|boolean',
+                'truncation_notes' => 'required_if:is_not_truncated,0|max:255',
 
                 'colorsArray' => 'required|array',
                 'colorsArray.*.id' => 'required|integer|distinct|exists:colors,id',
@@ -607,7 +613,7 @@ class EditManuscript extends Component
                     'trans_day_nbr_m', 'trans_month_m', 'trans_syear_m', 'trans_eyear_m',
                     'trans_place', 'signed_in', 'cabinet_id', 'nbr_in_cabinet', 'manu_type', 'nbr_in_index',
                     'font', 'font_style', 'regular_lines', 'lines_notes', 'nbr_of_papers', 'paper_size', 'size_notes',
-                    'save_status', 'is_truncated', 'truncation_notes', 'transcribed_from', 'transcribed_to',
+                    'save_status', 'is_not_truncated', 'truncation_notes', 'transcribed_from', 'transcribed_to',
                     'manuscript_level', 'transcriber_level', 'rost_completion', 'country_id', 'city_id',
                     'notes'
                 ]));

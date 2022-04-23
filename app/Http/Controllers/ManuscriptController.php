@@ -185,9 +185,9 @@ class ManuscriptController extends Controller
                 //->orWhereNull('regular_lines');
             })
             ->where(function ($query) use ($request) {
-                if ($request->is_truncated !== null)
-                    $query->where('is_truncated', $request->is_truncated);
-                //->orWhereNull('is_truncated');
+                if ($request->is_not_truncated !== null)
+                    $query->where('is_not_truncated', $request->is_not_truncated);
+                //->orWhereNull('is_not_truncated');
             })
             ->where(function ($query) use ($request) {
                 if ($request->signed_in !== null)

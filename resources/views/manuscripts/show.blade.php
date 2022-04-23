@@ -690,8 +690,8 @@ $i = 0;
                     <h5 class="text-dark">التمام والبتر: </h5>
                 </div>
                 <div class="col-md-2">
-                    @if ($manuscript->is_truncated !== null)
-                        <p>{{ $manuscript->is_truncated ? 'تامة' : 'مبتورة' }}</p>
+                    @if ($manuscript->is_not_truncated !== null)
+                        <p>{{ $manuscript->is_not_truncated ? 'تامة' : 'مبتورة' }}</p>
                     @else
                         <p class="text-success">/ / /</p>
                     @endif

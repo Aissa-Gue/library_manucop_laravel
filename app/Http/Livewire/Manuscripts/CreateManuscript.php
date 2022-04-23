@@ -83,7 +83,7 @@ class CreateManuscript extends Component
     public $size_notes;
     public $regular_lines;
     public $lines_notes;
-    public $is_truncated;
+    public $is_not_truncated;
     public $truncation_notes;
     public $nbr_of_papers;
     public $save_status;
@@ -333,15 +333,17 @@ class CreateManuscript extends Component
         return $this->cabinet_id = $data_id;
     }
 
+    public function setCountryId($data_id)
+    {
+        $this->reset('city', 'city_id');
+        return $this->country_id = $data_id;
+    }
+
     public function setCityId($data_id)
     {
         return $this->city_id = $data_id;
     }
 
-    public function setCountryId($data_id)
-    {
-        return $this->country_id = $data_id;
-    }
 
 
     public function increaseNbrOfTranscribers()
@@ -490,8 +492,8 @@ class CreateManuscript extends Component
                 'size_notes' => 'required_with:paper_size|max:255',
 
                 'save_status' => 'nullable|string|max:255|in:حسنة,متوسطة,رديئة,من حسنة إلى متوسطة,من متوسطة إلى رديئة',
-                'is_truncated' => 'nullable|boolean',
-                'truncation_notes' => 'required_with:is_truncated|max:255',
+                'is_not_truncated' => 'nullable|boolean',
+                'truncation_notes' => 'required_if:is_not_truncated,0|max:255',
 
                 'colorsArray' => 'required|array',
                 'colorsArray.*.id' => 'required|integer|distinct|exists:colors,id',
