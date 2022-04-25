@@ -82,50 +82,6 @@ $("#country").change(function () {
     ).data("id");
 });
 
-//************ Switch between transDate range/exact ************//
-
-$("#transDate_range").hide();
-$("#transDate_range_m").hide();
-
-function hide_range() {
-    localStorage.setItem("transDate_range", "off");
-    $("#transDate_exact").show(400);
-    $("#transDate_exact_m").show(400);
-    $("#transDate_range").hide(400);
-    $("#transDate_range_m").hide(400);
-
-    $("#transDate_range input").val(null);
-    $("#transDate_range_m input").val(null);
-}
-
-function hide_exact() {
-    localStorage.setItem("transDate_range", "on");
-    $("#transDate_range").show(400);
-    $("#transDate_range_m").show(400);
-    $("#transDate_exact").hide(400);
-    $("#transDate_exact_m").hide(400);
-
-    $("#transDate_exact input").val(null);
-    $("#transDate_exact select").prop("selectedIndex", 0);
-    $("#transDate_exact_m input").val(null);
-    $("#transDate_exact_m select").prop("selectedIndex", 0);
-}
-
-$("#hide_Exact").click(function () {
-    hide_range();
-});
-$("#hide_range").click(function () {
-    hide_exact();
-});
-
-setInterval(() => {
-    if (localStorage.getItem("transDate_range") == "off") {
-        hide_range();
-    } else if (localStorage.getItem("transDate_range") == "on") {
-        hide_exact();
-    }
-}, 0);
-
 /********** Step 03 **********/
 
 var motif = [],

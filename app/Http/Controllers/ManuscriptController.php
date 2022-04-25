@@ -2,19 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Color;
 use App\Models\Manuscript;
 use App\Models\ManuscriptColor;
 use App\Models\ManuscriptManutype;
 use App\Models\ManuscriptMotif;
 use App\Models\ManuscriptTranscriber;
-use App\Models\Manutype;
 use App\Models\MatchingFont;
-use App\Models\Motif;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class ManuscriptController extends Controller
 {
@@ -55,17 +51,17 @@ class ManuscriptController extends Controller
             })
             ->whereHas('transcribers', function ($query) use ($request) {
                 $query->select(DB::raw("CONCAT(full_name,
-                IFNULL(concat(' ',descent1),''),
-                IFNULL(concat(' ',descent2),''),
-                IFNULL(concat(' ',descent3),''),
-                IFNULL(concat(' ',descent4),''),
-                IFNULL(concat(' ',descent5),''),
-                IFNULL(concat(' ',last_name),''),
-                IFNULL(concat(' ',nickname),''),
-                IFNULL(concat(' ',other_name1),''),
-                IFNULL(concat(' ',other_name2),''),
-                IFNULL(concat(' ',other_name3),''),
-                IFNULL(concat(' ',other_name4),''))
+                IFNULL('',concat(' ',descent1)),
+                IFNULL('',concat(' ',descent2)),
+                IFNULL('',concat(' ',descent3)),
+                IFNULL('',concat(' ',descent4)),
+                IFNULL('',concat(' ',descent5)),
+                IFNULL('',concat(' ',last_name)),
+                IFNULL('',concat(' ',nickname)),
+                IFNULL('',concat(' ',other_name1)),
+                IFNULL('',concat(' ',other_name2)),
+                IFNULL('',concat(' ',other_name3)),
+                IFNULL('',concat(' ',other_name4)))
                 as full_name_all"))
                     ->having('full_name_all', 'LIKE', '%' . $request->transcriber . '%');
             })
@@ -134,17 +130,17 @@ class ManuscriptController extends Controller
             })
             ->whereHas('transcribers', function ($query) use ($request) {
                 $query->select(DB::raw("CONCAT(full_name,
-                IFNULL(concat(' ',descent1),''),
-                IFNULL(concat(' ',descent2),''),
-                IFNULL(concat(' ',descent3),''),
-                IFNULL(concat(' ',descent4),''),
-                IFNULL(concat(' ',descent5),''),
-                IFNULL(concat(' ',last_name),''),
-                IFNULL(concat(' ',nickname),''),
-                IFNULL(concat(' ',other_name1),''),
-                IFNULL(concat(' ',other_name2),''),
-                IFNULL(concat(' ',other_name3),''),
-                IFNULL(concat(' ',other_name4),''))
+                IFNULL('',concat(' ',descent1)),
+                IFNULL('',concat(' ',descent2)),
+                IFNULL('',concat(' ',descent3)),
+                IFNULL('',concat(' ',descent4)),
+                IFNULL('',concat(' ',descent5)),
+                IFNULL('',concat(' ',last_name)),
+                IFNULL('',concat(' ',nickname)),
+                IFNULL('',concat(' ',other_name1)),
+                IFNULL('',concat(' ',other_name2)),
+                IFNULL('',concat(' ',other_name3)),
+                IFNULL('',concat(' ',other_name4)))
                 as full_name_all"))
                     ->having('full_name_all', 'LIKE', '%' . $request->transcriber . '%');
             })

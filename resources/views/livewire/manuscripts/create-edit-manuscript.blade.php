@@ -459,193 +459,196 @@ $e_font_styles = ['النسخ', 'الثلث', 'الكوفي', 'التعليق', 
                 </div>
             </div>
 
-            <div class="row mt-2" id="transDate_exact">
-                <div class="col-md-2">
-                    <label for="trans_day" class="form-label">تاريخ النسخ</label>
-                    <select wire:model="trans_day" name="trans_day" id="trans_day"
-                        class="form-select @error('trans_day') is-invalid @enderror">
-                        <option selected>-أدخل اليوم-</option>
-                        @for ($i = 0; $i <= 6; $i++)
-                            <option value="{{ $i + 1 }}">
-                                {{ $days[$i] }}
-                            </option>
-                        @endfor
-                    </select>
-                    @error('trans_day')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+            @if ($is_range === false)
+                <div class="row mt-2" id="transDate_exact">
+                    <div class="col-md-2">
+                        <label for="trans_day" class="form-label">تاريخ النسخ</label>
+                        <select wire:model="trans_day" name="trans_day" id="trans_day"
+                            class="form-select @error('trans_day') is-invalid @enderror">
+                            <option selected>-أدخل اليوم-</option>
+                            @for ($i = 0; $i <= 6; $i++)
+                                <option value="{{ $i + 1 }}">
+                                    {{ $days[$i] }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('trans_day')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2">
+                        <label for="trans_day_nbr" class="form-label">&nbsp;</label>
+                        <select wire:model="trans_day_nbr" name="trans_day_nbr" id="trans_day_nbr"
+                            class="form-select @error('trans_day_nbr') is-invalid @enderror">
+                            <option selected>- أدخل اليوم -</option>
+                            @for ($i = 1; $i <= 31; $i++)
+                                <option value="{{ $i }}">
+                                    {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('trans_day_nbr')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2">
+                        <label for="trans_month" class="form-label">&nbsp;</label>
+                        <select wire:model="trans_month" name="trans_month" id="trans_month"
+                            class="form-select @error('trans_month') is-invalid @enderror">
+                            <option selected>-أدخل الشهر-</option>
+                            @for ($i = 0; $i <= 11; $i++)
+                                <option value="{{ $i + 1 }}">
+                                    {{ $months[$i] }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('trans_month')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2">
+                        <label for="trans_syear" class="form-label">&nbsp;</label>
+                        <input wire:model="trans_syear" type="number"
+                            class="form-control @error('trans_syear') is-invalid @enderror" name="trans_syear"
+                            id="trans_syear" placeholder="أدخل السنة">
+                        @error('trans_syear')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2 mt-2">
+                        <label for="date_type" class="form-label">&nbsp;</label>
+                        <p>[هجري]</p>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <label for="trans_day_nbr" class="form-label">&nbsp;</label>
-                    <select wire:model="trans_day_nbr" name="trans_day_nbr" id="trans_day_nbr"
-                        class="form-select @error('trans_day_nbr') is-invalid @enderror">
-                        <option selected>- أدخل اليوم -</option>
-                        @for ($i = 1; $i <= 31; $i++)
-                            <option value="{{ $i }}">
-                                {{ $i }}
-                            </option>
-                        @endfor
-                    </select>
-                    @error('trans_day_nbr')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-                <div class="col-md-2">
-                    <label for="trans_month" class="form-label">&nbsp;</label>
-                    <select wire:model="trans_month" name="trans_month" id="trans_month"
-                        class="form-select @error('trans_month') is-invalid @enderror">
-                        <option selected>-أدخل الشهر-</option>
-                        @for ($i = 0; $i <= 11; $i++)
-                            <option value="{{ $i + 1 }}">
-                                {{ $months[$i] }}
-                            </option>
-                        @endfor
-                    </select>
-                    @error('trans_month')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-                <div class="col-md-2">
-                    <label for="trans_syear" class="form-label">&nbsp;</label>
-                    <input wire:model="trans_syear" type="number"
-                        class="form-control @error('trans_syear') is-invalid @enderror" name="trans_syear"
-                        id="trans_syear" placeholder="أدخل السنة">
-                    @error('trans_syear')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-                <div class="col-md-2 mt-2">
-                    <label for="date_type" class="form-label">&nbsp;</label>
-                    <p>[هجري]</p>
-                </div>
-            </div>
 
-            <!-- START Miladi date -->
-            <div class="row" id="transDate_exact_m">
-                <div class="offset-2 col-md-2">
-                    <select wire:model="trans_day_nbr_m" name="trans_day_nbr_m" id="trans_day_nbr"
-                        class="form-select @error('trans_day_nbr_m') is-invalid @enderror">
-                        <option selected>- أدخل اليوم -</option>
-                        @for ($i = 1; $i <= 31; $i++)
-                            <option value="{{ $i }}">
-                                {{ $i }}
-                            </option>
-                        @endfor
-                    </select>
-                    @error('trans_day_nbr_m')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+                <!-- START Miladi date -->
+                <div class="row" id="transDate_exact_m">
+                    <div class="offset-2 col-md-2">
+                        <select wire:model="trans_day_nbr_m" name="trans_day_nbr_m" id="trans_day_nbr_m"
+                            class="form-select @error('trans_day_nbr_m') is-invalid @enderror">
+                            <option selected>- أدخل اليوم -</option>
+                            @for ($i = 1; $i <= 31; $i++)
+                                <option value="{{ $i }}">
+                                    {{ $i }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('trans_day_nbr_m')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2">
+                        <select wire:model="trans_month_m" name="trans_month_m" id="trans_month_m"
+                            class="form-select @error('trans_month_m') is-invalid @enderror">
+                            <option selected>-أدخل الشهر-</option>
+                            @for ($i = 0; $i <= 11; $i++)
+                                <option value="{{ $i + 1 }}">
+                                    {{ $months_m[$i] }}
+                                </option>
+                            @endfor
+                        </select>
+                        @error('trans_month_m')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2">
+                        <input wire:model="trans_syear_m" type="number"
+                            class="form-control @error('trans_syear_m') is-invalid @enderror" name="trans_syear_m"
+                            id="trans_syear_m" placeholder="أدخل السنة">
+                        @error('trans_syear_m')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2 mt-2">
+                        <p>[ميلادي]</p>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <select wire:model="trans_month_m" name="trans_month_m" id="trans_month"
-                        class="form-select @error('trans_month_m') is-invalid @enderror">
-                        <option selected>-أدخل الشهر-</option>
-                        @for ($i = 0; $i <= 11; $i++)
-                            <option value="{{ $i + 1 }}">
-                                {{ $months_m[$i] }}
-                            </option>
-                        @endfor
-                    </select>
-                    @error('trans_month_m')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+                <!-- END miladi date -->
+            @elseif ($is_range === true)
+                <!--Hijri date range-->
+                <div class="row mt-2" id="transDate_range">
+                    <div class="col-md-auto">
+                        <label for="trans_syear_range" class="form-label">تاريخ النسخ [أدخل نطاق]</label>
+                        <input wire:model="trans_syear" type="number"
+                            class="form-control @error('trans_syear') is-invalid @enderror" name="trans_syear"
+                            id="trans_syear_range" placeholder="من سنة">
+                        @error('trans_syear')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-auto">
+                        <label for="trans_eyear_range" class="form-label">&nbsp;</label>
+                        <input wire:model="trans_eyear" type="number"
+                            class="form-control @error('trans_eyear') is-invalid @enderror" name="trans_eyear"
+                            id="trans_eyear_range" placeholder="إلى سنة">
+                        @error('trans_eyear')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2 mt-2">
+                        <label for="date_type" class="form-label">&nbsp;</label>
+                        <p>[هجري]</p>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <input wire:model="trans_syear_m" type="number"
-                        class="form-control @error('trans_syear_m') is-invalid @enderror" name="trans_syear_m"
-                        id="trans_syear_m" placeholder="أدخل السنة">
-                    @error('trans_syear_m')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-                <div class="col-md-2 mt-2">
-                    <p>[ميلادي]</p>
-                </div>
-            </div>
-            <!-- END miladi date -->
+                <!--END Hijri date range -->
 
-            <!--Hijri date range-->
-            <div class="row mt-2" id="transDate_range">
-                <div class="col-md-auto">
-                    <label for="trans_syear" class="form-label">تاريخ النسخ [أدخل نطاق]</label>
-                    <input wire:model="trans_syear" type="number"
-                        class="form-control @error('trans_syear') is-invalid @enderror" name="trans_syear"
-                        id="trans_syear" placeholder="من سنة">
-                    @error('trans_syear')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+                <!--miladi date range-->
+                <div class="row" id="transDate_range_m">
+                    <div class="col-md-auto">
+                        <input wire:model="trans_syear_m" type="number"
+                            class="form-control @error('trans_syear_m') is-invalid @enderror" name="trans_syear_m"
+                            id="trans_syear_m_range" placeholder="من سنة">
+                        @error('trans_syear_m')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-auto">
+                        <input wire:model="trans_eyear_m" type="number"
+                            class="form-control @error('trans_eyear_m') is-invalid @enderror" name="trans_eyear_m"
+                            id="trans_eyear_m_range" placeholder="إلى سنة">
+                        @error('trans_eyear_m')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="col-md-2 mt-2">
+                        <p>[ميلادي]</p>
+                    </div>
                 </div>
-                <div class="col-md-auto">
-                    <label for="trans_eyear" class="form-label">&nbsp;</label>
-                    <input wire:model="trans_eyear" type="number"
-                        class="form-control @error('trans_eyear') is-invalid @enderror" name="trans_eyear"
-                        id="trans_eyear" placeholder="إلى سنة">
-                    @error('trans_eyear')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-                <div class="col-md-2 mt-2">
-                    <label for="date_type" class="form-label">&nbsp;</label>
-                    <p>[هجري]</p>
-                </div>
-            </div>
-            <!--END Hijri date range -->
-
-            <!--miladi date range-->
-            <div class="row" id="transDate_range_m">
-                <div class="col-md-auto">
-                    <input wire:model="trans_syear_m" type="number"
-                        class="form-control @error('trans_syear_m') is-invalid @enderror" name="trans_syear_m"
-                        id="trans_syear_m" placeholder="من سنة">
-                    @error('trans_syear_m')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-                <div class="col-md-auto">
-                    <input wire:model="trans_eyear_m" type="number"
-                        class="form-control @error('trans_eyear_m') is-invalid @enderror" name="trans_eyear_m"
-                        id="trans_eyear_m" placeholder="إلى سنة">
-                    @error('trans_eyear_m')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-                </div>
-                <div class="col-md-2 mt-2">
-                    <p>[ميلادي]</p>
-                </div>
-            </div>
-            <!--END miladi date range -->
+                <!--END miladi date range -->
+            @endif
 
             <div class="mb-2">
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="hide_Exact">تاريخ
+                <button wire:click.prevent="changeRangeStatus(false)" type="button"
+                    class="btn btn-sm btn-primary rounded-pill" id="hide_Exact">تاريخ
                     محدد
                 </button>
-                <button type="button" class="btn btn-sm btn-primary rounded-pill" id="hide_range">فترة
+                <button wire:click.prevent="changeRangeStatus(true)" type="button"
+                    class="btn btn-sm btn-primary rounded-pill" id="hide_range">فترة
                     زمنية
                 </button>
             </div>
-
 
             <div class="row mt-2">
                 <div class="col-md-5">

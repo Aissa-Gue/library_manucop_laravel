@@ -102,12 +102,12 @@ class CountryController extends Controller
         } catch (\Exception $e) {
             if (Country::find($id)->manuscripts->count() > 0) {
                 $message = [
-                    "label" => "خطأ، توجد منسوخات بهذا البلد يجب حذفها أولا",
+                    "label" => "توجد منسوخات بهذا البلد يجب حذفها أولا",
                     "bg" => "bg-danger",
                 ];
             } elseif (Country::find($id)->transcribers->count() > 0) {
                 $message = [
-                    "label" => "خطأ، يوجد نساخ بهذا البلد يجب حذفهم أولا",
+                    "label" => "يوجد نساخ بهذا البلد يجب حذفهم أولا",
                     "bg" => "bg-danger",
                 ];
             } else {

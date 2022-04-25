@@ -47,6 +47,7 @@ $page = ['title' => 'قائمة البلدان'];
                 <tr>
                     <th scope="col" class="text-center">رقم البلد</th>
                     <th scope="col">اسم البلد</th>
+                    <th scope="col" class="text-center">عدد المدن</th>
                     <th scope="col" class="text-center">عدد المنسوخات</th>
                     <th scope="col" class="text-center">عدد الناسخين</th>
                     <th scope="col" class="text-center">تعديل</th>
@@ -70,6 +71,9 @@ $page = ['title' => 'قائمة البلدان'];
                     <tr>
                         <th scope="row" class="text-center">{{ $country->id }}</th>
                         <td>{{ $country->name }}</td>
+                        <td class="text-center">
+                            {{ $country->cities ? $country->cities->count() : 0 }}
+                        </td>
                         <td class="text-center">
                             {{ $country->manuscripts ? $country->manuscripts->count() : 0 }}
                         </td>

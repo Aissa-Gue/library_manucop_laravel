@@ -142,12 +142,12 @@ class CityController extends Controller
         } catch (\Exception $e) {
             if (City::find($id)->manuscripts->count() > 0) {
                 $message = [
-                    "label" => "خطأ، توجد منسوخات بهذه المدينة يجب حذفها أولا",
+                    "label" => "توجد منسوخات بهذه المدينة يجب حذفها أولا",
                     "bg" => "bg-danger",
                 ];
             } elseif (City::find($id)->transcribers->count() > 0) {
                 $message = [
-                    "label" => "خطأ، يوجد نساخ بهذه المدينة يجب حذفهم أولا",
+                    "label" => "يوجد نساخ بهذه المدينة يجب حذفهم أولا",
                     "bg" => "bg-danger",
                 ];
             } else {

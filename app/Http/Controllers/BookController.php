@@ -119,7 +119,7 @@ class BookController extends Controller
 
             if (Book::find($id)->manuscripts->count() > 0) {
                 $message = [
-                    "label" => "خطأ، للكتاب استمارات يجب حذفها أولا",
+                    "label" => "للكتاب استمارات يجب حذفها أولا",
                     "bg" => "bg-danger",
                 ];
             } else {

@@ -121,7 +121,7 @@ class AuthorController extends Controller
         } catch (\Exception $e) {
             if (Author::find($id)->books->count() > 0) {
                 $message = [
-                    "label" => "خطأ، توجد كتب للمؤلف يجب حذفها أولا",
+                    "label" => "توجد كتب للمؤلف يجب حذفها أولا",
                     "bg" => "bg-danger",
                 ];
             } else {

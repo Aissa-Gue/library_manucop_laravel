@@ -53,6 +53,7 @@ class EditManuscript extends Component
     public $book;
     public $book_id;
     public $book_part;
+    public $is_range;
     public $trans_day;
     public $trans_day_nbr;
     public $trans_month;
@@ -116,6 +117,12 @@ class EditManuscript extends Component
     {
         $this->currentStep = 1;
         $this->nbrOfTranscribers = $this->manuscript->transcribers->count();
+        if ($this->trans_eyear != null || $this->trans_eyear_m != null) {
+            $this->is_range = true;
+        } else {
+            $this->is_range = false;
+        }
+
         //step 01
         $i = 1;
         foreach ($this->manuscript->transcribers as $transcriber) {
@@ -277,6 +284,11 @@ class EditManuscript extends Component
         return $manutypes = Manutype::all();
     }
 
+    public function changeRangeStatus($bool)
+    {
+        $this->is_range = $bool;
+        $this->reset('trans_day', 'trans_day_nbr', 'trans_month', 'trans_syear', 'trans_eyear', 'trans_day_nbr_m', 'trans_month_m', 'trans_syear_m', 'trans_eyear_m');
+    }
 
     public function pushToTranscriberMatchers($transcriber, $id, $value)
     {

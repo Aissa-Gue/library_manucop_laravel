@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Manuscript;
 use App\Models\MatchingFont;
 use App\Models\Transcriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
 
 class TranscriberController extends Controller
 {
@@ -37,17 +35,17 @@ class TranscriberController extends Controller
         $transcribers = Transcriber::with('manuscripts', 'country', 'city')
             ->where(function ($query) use ($request) {
                 $query->select(DB::raw("CONCAT(full_name,
-                IFNULL(concat(' ',descent1),''),
-                IFNULL(concat(' ',descent2),''),
-                IFNULL(concat(' ',descent3),''),
-                IFNULL(concat(' ',descent4),''),
-                IFNULL(concat(' ',descent5),''),
-                IFNULL(concat(' ',last_name),''),
-                IFNULL(concat(' ',nickname),''),
-                IFNULL(concat(' ',other_name1),''),
-                IFNULL(concat(' ',other_name2),''),
-                IFNULL(concat(' ',other_name3),''),
-                IFNULL(concat(' ',other_name4),''))
+                IFNULL('',concat(' ',descent1)),
+                IFNULL('',concat(' ',descent2)),
+                IFNULL('',concat(' ',descent3)),
+                IFNULL('',concat(' ',descent4)),
+                IFNULL('',concat(' ',descent5)),
+                IFNULL('',concat(' ',last_name)),
+                IFNULL('',concat(' ',nickname)),
+                IFNULL('',concat(' ',other_name1)),
+                IFNULL('',concat(' ',other_name2)),
+                IFNULL('',concat(' ',other_name3)),
+                IFNULL('',concat(' ',other_name4)))
                 as full_name_all"))
                     ->having('full_name_all', 'LIKE', '%' . $request->transcriber . '%');
             })
@@ -207,7 +205,7 @@ class TranscriberController extends Controller
         } catch (\Exception $e) {
             if (Transcriber::find($id)->manuscripts->count() > 0 || Transcriber::find($id)->matchers->count() > 0) {
                 $message = [
-                    "label" => "خطأ، للناسخ استمارات يجب حذفها أولا",
+                    "label" => "للناسخ استمارات يجب حذفها أولا",
                     "bg" => "bg-danger",
                 ];
             } else {
